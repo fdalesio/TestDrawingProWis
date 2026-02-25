@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Well Schematic - EB33H (Esempio Reale)</title>
+<style>
+  body { background: #f3f3f3; font-family: sans-serif; }
+  #wrapper { width: 1200px; margin: 20px auto; background: white; padding: 20px; }
+  svg { border: 1px solid #ccc; background: #fff; }
+</style>
+</head>
+
+<body>
+<div id="wrapper">
+  <h1>EB‑33H – Well Schematic (Esempio Reale)</h1>
+  <svg id="schematic" width="1100" height="1500" viewBox="0 0 1100 1500"></svg>
+</div>
+
+<script>
+(() => {
+  // ===== Utility di base =====================================================
+
+  // Converte stringhe OD tipo "18 5/8" → 18.625 (inches)
+  function parseOD(odStr) {
+    if (odStr == null) return NaN;
+    const s = String(odStr).trim();
+    const parts = s.split(/\s+/);
+    if (parts.length === 1) return parseFloat(parts[0].replace(",", "."));
+    const whole = parseFloat(parts[0].replace(",", "."));
+    const frac = parts[1].split("/");
+    const n = parseFloat(frac[0]), d = parseFloat(frac[1]);
+    return whole + (n / d);
+  }
+
+  // Profondità (ft) → Y px con scala piecewise.
+  // segments: [{to:500, pxPerFt:0.35}, {to:9000, pxPerFt:0.08}]
+  class DepthScale {
+    constructor({ surfaceYPx = 260, segments = [] } = {}) {
+      this.surfaceY = surfaceYPx;
+      this.segments = segments;
+      // Precalcolo cumulativi per efficienza
+      let accDepth = 0, accPx = this.surfaceY;
+      this._acc = [];
+      for (const seg of segments) {
+        this._acc.push({ upTo: seg.to, baseDepth: accDepth, basePx: accPx, pxPerFt: seg.pxPerFt });
+        accPx += (seg.to - accDepth) * seg.pxPerFt;
+        accDepth = seg.to;
+      }
+      this.totalY = accPx;
+      this.maxDepth = accDepth;
+    }
+    y(depthFt) {
+      if (depthFt <= 0) return this.surfaceY;
+      let prev = { upTo: 0, baseDepth: 0, basePx: this.surfaceY, pxPerFt: this.segments[0]?.pxPerFt ?? 0.1 };
+      for (const seg of this._acc) {
+        if (depthFt <= seg.upTo) {
+          return seg.basePx + (depthFt - seg.baseDepth) * seg.pxPerFt;
+        }
+        prev = seg;
+      }
+      // se oltre l’ultimo segmento, estende con l’ultimo pxPerFt
+      return prev.basePx + (depthFt - prev.baseDepth) * prev.pxPerFt;
+    }
+  }
+
+  // Crea/assicurati defs per pattern/marker (cemento, frecce)
+  function ensureDefs(svg, { cementPatternId = 'cementHatch', strokeColor = '#aaa' } = {}) {
+    const svgns = 'http://www.w3.org/2000/svg';
+    let defs = svg.querySelector('defs');
+    if (!defs) {
+      defs = document.createElementNS(svgns, 'defs');
+      svg.appendChild(defs);
+    }
+    // Cement hatch
+    if (!svg.querySelector(`#${cementPatternId}`)) {
+      const pattern = document.createElementNS(svgns, 'pattern');
+      pattern.setAttribute('id', cementPatternId);
+      pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+      pattern.setAttribute('width', '8');
+      pattern.setAttribute('height', '8');
+      const path = document.createElementNS(svgns, 'path');
+      path.setAttribute('d', 'M-2,2 l4,-4 M0,8 l8,-8 M6,10 l4,-4');
+      path.setAttribute('stroke', strokeColor);
+      path.setAttribute('stroke-width', '1');
+      pattern.appendChild(path);
+      defs.appendChild(pattern);
+    }
+    // Marker freccia (per label opzionali)
+    if (!svg.querySelector('#arrow')) {
+      const marker = document.createElementNS(svgns, 'marker');
+      marker.setAttribute('id', 'arrow');
+      marker.setAttribute('markerWidth', '6');
+      marker.setAttribute('markerHeight', '6');
+      marker.setAttribute('refX', '5');
+      marker.setAttribute('refY', '3');
+      marker.setAttribute('orient', 'auto');
+      const p = document.createElementNS(svgns, 'path');
+      p.setAttribute('d', 'M0,0 L6,3 L0,6 Z');
+      p.setAttribute('fill', '#555');
+      marker.appendChild(p);
+      defs.appendChild(marker);
+    }
+  }
+
+  // Colori e dimensioni di default
+  const Defaults = {
+    pxPerInch: 3.2,       // scala orizzontale per diametri
+    casingWallPx: 3,      // spessore parete casing
+    tubingWallPx: 2,      // spessore parete tubing
+    minHalfWidthPx: 6,    // minimo per visibilità
+    colors: {
+      bg: '#fff',
+      axis: '#555',
+      labels: '#222',
+      casing: '#50627A',
+      tubing: '#CE6A2B',
+      cement: '#d9d9d9',
+      openHole: '#B38867',
+      packer: '#2F855A',
+      dhsv: '#C53030',
+      linerAcc: '#6B46C1'
+    }
+  };
+
+  // Calcola half-width (px) da OD (inches)
+  function halfWidthPxFromOD(odInch, cfg = Defaults) {
+    const px = Math.max(cfg.minHalfWidthPx, odInch * cfg.pxPerInch / 2);
+    return px;
+  }
+
+  // Helper per creare elementi SVG
+  function el(tag, attrs = {}) {
+    const svgns = 'http://www.w3.org/2000/svg';
+    const e = document.createElementNS(svgns, tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v != null) e.setAttribute(k, String(v));
+    }
+    return e;
+  }
+
+  // ===== Disegno assi / griglia =============================================
+
+  function drawDepthAxis(svg, scale, { x = 80, major = 1000, minor = 100, y0 = scale.surfaceY, y1 = scale.totalY, color = Defaults.colors.axis } = {}) {
+    const g = el('g', { 'data-role': 'depth-axis' });
+    svg.appendChild(g);
+
+    // Linea principale
+    g.appendChild(el('line', { x1: x, y1: y0, x2: x, y2: y1, stroke: color, 'stroke-width': 1 }));
+
+    // Tacche minor/major
+    const maxFt = Math.max(scale.maxDepth, 9000);
+    for (let d = 0; d <= maxFt; d += minor) {
+      const y = scale.y(d);
+      const isMajor = d % major === 0;
+      const len = isMajor ? 10 : 5;
+      g.appendChild(el('line', { x1: x, y1: y, x2: x + len, y2: y, stroke: color, 'stroke-width': 1 }));
+      if (isMajor) {
+        const t = el('text', { x: x - 4, y: y + 4, 'text-anchor': 'end', 'font-size': 11, fill: Defaults.colors.labels });
+        t.textContent = `${d} ft`;
+        g.appendChild(t);
+      }
+    }
+    return g;
+  }
+
+  // ===== Casing & Cement =====================================================
+
+  /**
+   * Disegna un casing.
+   * @param {SVGElement} svg
+   * @param {DepthScale} scale
+   * @param {number} cx - center X
+   * @param {object} casing - { od:"30", shoeDepth:319, type:"Conductor", isLiner?:true, hangerDepth?:7138, cementTopActual?:0 }
+   * @param {object} opts - { wallPx, color }
+   * @returns {{group:SVGGElement, halfOuter:number, halfInner:number, yTop:number, yShoe:number}}
+   */
+  function drawCasing(svg, scale, cx, casing, opts = {}) {
+    const wallPx = opts.wallPx ?? Defaults.casingWallPx;
+    const color = opts.color ?? Defaults.colors.casing;
+    const odIn = typeof casing.od === 'number' ? casing.od : parseOD(casing.od);
+    const halfOuter = halfWidthPxFromOD(odIn);
+    const halfInner = Math.max(halfOuter - wallPx, halfOuter * 0.6); // clamp per visibilità
+
+    const topDepth = casing.isLiner ? (Number(casing.hangerDepth) || 0) : 0;
+    const bottomDepth = Number(casing.shoeDepth) || 0;
+
+    const yTop = scale.y(topDepth);
+    const yShoe = scale.y(bottomDepth);
+
+    const g = el('g', { 'data-role': 'casing' });
+    svg.appendChild(g);
+
+    // Pareti (sinistra/destra)
+    const xL = cx - halfOuter;
+    const xLi = cx - halfInner;
+    const xR = cx + halfOuter;
+    const xRi = cx + halfInner;
+
+    g.appendChild(el('rect', { x: xL, y: yTop, width: (halfOuter - halfInner), height: (yShoe - yTop), fill: color }));
+    g.appendChild(el('rect', { x: xRi, y: yTop, width: (halfOuter - halfInner), height: (yShoe - yTop), fill: color }));
+
+    // Shoe (linea spessa)
+    g.appendChild(el('line', { x1: xL, y1: yShoe, x2: xR, y2: yShoe, stroke: color, 'stroke-width': 3 }));
+
+    // Label
+    const lbl = el('text', { x: cx + halfOuter + 8, y: (yTop + yShoe) / 2, 'font-size': 12, fill: Defaults.colors.labels });
+    lbl.textContent = `${casing.type ?? 'Casing'} ${odIn.toFixed(3)}" @ ${bottomDepth} ft`;
+    g.appendChild(lbl);
+
+    return { group: g, halfOuter, halfInner, yTop, yShoe };
+  }
+
+  /**
+   * Cemento nell’anello tra due raggi (outerBound ↔ innerBound).
+   * @param outerHalfPx raggio esterno annulus (px)
+   * @param innerHalfPx raggio interno annulus (px) → in contatto con casing
+   * @param topDepth ft
+   * @param bottomDepth ft
+   */
+  function drawCementAnnulus(svg, scale, cx, { outerHalfPx, innerHalfPx, topDepth, bottomDepth }, { patternId = 'cementHatch', baseColor = Defaults.colors.cement } = {}) {
+    const yTop = scale.y(Math.max(0, topDepth));
+    const yBot = scale.y(bottomDepth);
+    if (yBot <= yTop || outerHalfPx <= innerHalfPx) return null;
+
+    const g = el('g', { 'data-role': 'cement' });
+    svg.appendChild(g);
+
+    // Due rettangoli (sinistra/destra) per simulare l’anello
+    g.appendChild(el('rect', { x: cx - outerHalfPx, y: yTop, width: (outerHalfPx - innerHalfPx), height: (yBot - yTop), fill: baseColor, opacity: 0.75 }));
+    g.appendChild(el('rect', { x: cx + innerHalfPx, y: yTop, width: (outerHalfPx - innerHalfPx), height: (yBot - yTop), fill: baseColor, opacity: 0.75 }));
+
+    // Hatch pattern sopra
+    g.appendChild(el('rect', { x: cx - outerHalfPx, y: yTop, width: (outerHalfPx - innerHalfPx), height: (yBot - yTop), fill: `url(#${patternId})`, opacity: 0.8 }));
+    g.appendChild(el('rect', { x: cx + innerHalfPx, y: yTop, width: (outerHalfPx - innerHalfPx), height: (yBot - yTop), fill: `url(#${patternId})`, opacity: 0.8 }));
+
+    return g;
+  }
+
+  // ===== Tubing, DHSV, Packer, Liner hanger, Open Hole =======================
+
+  /**
+   * Disegna tubing a sezioni.
+   * @param sections [{od:"4 1/2", topDepth:0, bottomDepth:436}, {od:"3 1/2", topDepth:436, bottomDepth:7802}]
+   */
+  function drawTubing(svg, scale, cx, sections = [], { wallPx = Defaults.tubingWallPx, color = Defaults.colors.tubing } = {}) {
+    const group = el('g', { 'data-role': 'tubing' });
+    svg.appendChild(group);
+
+    for (const s of sections) {
+      const odIn = typeof s.od === 'number' ? s.od : parseOD(s.od);
+      const halfOuter = halfWidthPxFromOD(odIn) * 0.45; // tubing più stretto vs casing
+      const halfInner = Math.max(halfOuter - wallPx, halfOuter * 0.6);
+
+      const yTop = scale.y(Number(s.topDepth) || 0);
+      const yBot = scale.y(Number(s.bottomDepth) || 0);
+
+      // pareti
+      group.appendChild(el('rect', { x: cx - halfOuter, y: yTop, width: (halfOuter - halfInner), height: (yBot - yTop), fill: color }));
+      group.appendChild(el('rect', { x: cx + halfInner, y: yTop, width: (halfOuter - halfInner), height: (yBot - yTop), fill: color }));
+
+      // shoe se è l’ultima sezione
+      if (s.isLast) {
+        group.appendChild(el('line', { x1: cx - halfOuter, y1: yBot, x2: cx + halfOuter, y2: yBot, stroke: color, 'stroke-width': 2 }));
+      }
+    }
+    return group;
+  }
+
+  // Valvola generica (diamante per DHSV o gate); orient='vertical'|'horizontal'
+  function drawValve(svg, scale, cx, { depthFt, sizePx = 14, color = Defaults.colors.dhsv, label = 'DHSV', orient = 'vertical' } = {}) {
+    const g = el('g', { 'data-role': 'valve' });
+    svg.appendChild(g);
+    const y = scale.y(depthFt);
+    const s = sizePx;
+
+    // Diamante
+    const pts = orient === 'vertical'
+      ? `${cx},${y - s/2} ${cx - s/2},${y} ${cx},${y + s/2} ${cx + s/2},${y}`
+      : `${cx - s/2},${y} ${cx},${y - s/2} ${cx + s/2},${y} ${cx},${y + s/2}`;
+
+    g.appendChild(el('polygon', { points: pts, fill: color, opacity: 0.9, stroke: '#333', 'stroke-width': 1 }));
+    const t = el('text', { x: cx + s + 6, y: y + 4, 'font-size': 12, fill: Defaults.colors.labels });
+    t.textContent = `${label} @ ${depthFt} ft`;
+    g.appendChild(t);
+    return g;
+  }
+
+  function drawPacker(svg, scale, cx, { depthFt, widthPx = 46, color = Defaults.colors.packer, label = 'Packer' } = {}) {
+    const g = el('g', { 'data-role': 'packer' });
+    svg.appendChild(g);
+    const y = scale.y(depthFt);
+    const half = widthPx / 2;
+
+    // due trapezi chevron
+    g.appendChild(el('polygon', { points: `${cx - half},${y - 6} ${cx - 10},${y - 6} ${cx - 4},${y} ${cx - 10},${y + 6} ${cx - half},${y + 6}`, fill: color, opacity: 0.85 }));
+    g.appendChild(el('polygon', { points: `${cx + half},${y - 6} ${cx + 10},${y - 6} ${cx + 4},${y} ${cx + 10},${y + 6} ${cx + half},${y + 6}`, fill: color, opacity: 0.85 }));
+
+    const t = el('text', { x: cx + half + 8, y: y + 4, 'font-size': 12, fill: Defaults.colors.labels });
+    t.textContent = `${label} @ ${depthFt} ft`;
+    g.appendChild(t);
+    return g;
+  }
+
+  function drawLinerHanger(svg, scale, cx, { depthFt, outerHalfPxAtHost, linerHalfPx, color = Defaults.colors.linerAcc, label = 'Liner Hanger' } = {}) {
+    const g = el('g', { 'data-role': 'liner-hanger' });
+    svg.appendChild(g);
+    const y = scale.y(depthFt);
+
+    // Staffe “[   ]” dal casing host al liner
+    g.appendChild(el('polyline', { points: `${cx - outerHalfPxAtHost},${y} ${cx - outerHalfPxAtHost + 10},${y} ${cx - linerHalfPx},${y}`, stroke: color, 'stroke-width': 3, fill: 'none' }));
+    g.appendChild(el('polyline', { points: `${cx + outerHalfPxAtHost},${y} ${cx + outerHalfPxAtHost - 10},${y} ${cx + linerHalfPx},${y}`, stroke: color, 'stroke-width': 3, fill: 'none' }));
+
+    const t = el('text', { x: cx + outerHalfPxAtHost + 8, y: y - 6, 'font-size': 12, fill: Defaults.colors.labels });
+    t.textContent = `${label} @ ${depthFt} ft`;
+    g.appendChild(t);
+    return g;
+  }
+
+  function drawOpenHole(svg, scale, cx, { topDepthFt, bottomDepthFt }, { color = Defaults.colors.openHole } = {}) {
+    const g = el('g', { 'data-role': 'open-hole' });
+    svg.appendChild(g);
+    const yTop = scale.y(topDepthFt);
+    const yBot = scale.y(bottomDepthFt);
+
+    // Pareti tratteggiate
+    g.appendChild(el('line', { x1: cx - 10, y1: yTop, x2: cx - 10, y2: yBot, stroke: color, 'stroke-width': 2, 'stroke-dasharray': '6 4' }));
+    g.appendChild(el('line', { x1: cx + 10, y1: yTop, x2: cx + 10, y2: yBot, stroke: color, 'stroke-width': 2, 'stroke-dasharray': '6 4' }));
+
+    const t = el('text', { x: cx + 16, y: (yTop + yBot)/2, 'font-size': 12, fill: Defaults.colors.labels });
+    t.textContent = `Open hole ${topDepthFt}–${bottomDepthFt} ft (MD)`;
+    g.appendChild(t);
+    return g;
+  }
+
+  // ===== Xmas Tree / Wellhead (schematico opzionale, non in scala) ==========
+
+  function drawWellhead(svg, { cx = 420, y = 210, width = 90, height = 28, color = '#2D3748', label = 'Wellhead' } = {}) {
+    const g = el('g', { 'data-role': 'wellhead' });
+    svg.appendChild(g);
+    g.appendChild(el('rect', { x: cx - width/2, y, width, height, rx: 4, fill: color, opacity: 0.95 }));
+    const t = el('text', { x: cx + width/2 + 8, y: y + height/2 + 4, 'font-size': 12, fill: Defaults.colors.labels });
+    t.textContent = label;
+    g.appendChild(t);
+    return g;
+  }
+
+  function drawXmasTree(svg, { cx = 420, baseY = 180, color = '#1A202C' } = {}) {
+    const g = el('g', { 'data-role': 'xmas-tree' });
+    svg.appendChild(g);
+
+    // Swab (top)
+    g.appendChild(el('rect', { x: cx - 20, y: baseY - 90, width: 40, height: 16, fill: color, rx: 2 }));
+    g.appendChild(el('text', { x: cx + 30, y: baseY - 78, 'font-size': 11, fill: Defaults.colors.labels })).textContent = 'SWAB';
+
+    // Cross + wings
+    g.appendChild(el('rect', { x: cx - 18, y: baseY - 66, width: 36, height: 28, fill: color, rx: 3 }));
+    g.appendChild(el('rect', { x: cx - 90, y: baseY - 60, width: 60, height: 16, fill: color, rx: 2 })); // kill wing
+    g.appendChild(el('rect', { x: cx + 30, y: baseY - 60, width: 60, height: 16, fill: color, rx: 2 })); // prod wing
+    g.appendChild(el('text', { x: cx - 92, y: baseY - 64, 'font-size': 10, fill: '#eee' })).textContent = 'KILL';
+    g.appendChild(el('text', { x: cx + 32, y: baseY - 64, 'font-size': 10, fill: '#eee' })).textContent = 'WING';
+
+    // Master Valves
+    g.appendChild(el('rect', { x: cx - 22, y: baseY - 34, width: 44, height: 16, fill: color, rx: 2 }));
+    g.appendChild(el('rect', { x: cx - 22, y: baseY - 14, width: 44, height: 16, fill: color, rx: 2 }));
+    g.appendChild(el('text', { x: cx + 30, y: baseY - 22, 'font-size': 10, fill: '#eee' })).textContent = 'MSV';
+    return g;
+  }
+
+  // ===== Compositore “a la carte” ============================================
+
+  /**
+   * Compose: disegna intero pozzo (surface + subsurface) usando i pezzi sopra.
+   * Usa dati generici; puoi rimuovere/aggiungere parti a piacere.
+   */
+  function drawWellSchematic(svg, data, {
+    centerX = 420,
+    scale = new DepthScale({ surfaceYPx: 260, segments: [{ to: 500, pxPerFt: 0.35 }, { to: 9000, pxPerFt: 0.08 }] }),
+    pxPerInch = Defaults.pxPerInch
+  } = {}) {
+
+    // Setup base
+    ensureDefs(svg, {});
+    Defaults.pxPerInch = pxPerInch;
+
+    // Assi profondità
+    drawDepthAxis(svg, scale, { x: 80 });
+
+    // Surface (opzionale)
+    drawXmasTree(svg, { cx: centerX, baseY: 215 });
+    drawWellhead(svg, { cx: centerX, y: 230 });
+
+    // === Casings: ordina per OD decrescente per layering corretto
+    const casings = (data.casings ?? []).slice().sort((a, b) => {
+      const A = typeof a.od === 'number' ? a.od : parseOD(a.od);
+      const B = typeof b.od === 'number' ? b.od : parseOD(b.od);
+      return B - A;
+    });
+
+    // Precompute half-width esterni per poter disegnare cementi tra stringhe
+    const casingGeom = [];
+    for (const c of casings) {
+      const geom = drawCasing(svg, scale, centerX, c, { wallPx: Defaults.casingWallPx });
+      casingGeom.push({ casing: c, ...geom });
+    }
+
+    // Cemento: per ogni casing, riempi annulus fino al cementTopActual (se 0 ⇒ fino a superficie)
+    for (let i = 0; i < casingGeom.length; i++) {
+      const inner = casingGeom[i];
+      const outer = casingGeom[i - 1]; // la stringa appena più grande fuori
+      const cementTop = (inner.casing.cementTopActual != null)
+        ? Number(inner.casing.cementTopActual)
+        : (inner.casing.isLiner ? (Number(inner.casing.hangerDepth) || inner.yTop) : 0);
+
+      const topD = Math.max(0, cementTop);
+      const botD = Number(inner.casing.shoeDepth) || 0;
+
+      const outerHalf = outer ? outer.halfInner : (inner.halfOuter + 16); // se non c’è, simuliamo formazione
+      drawCementAnnulus(svg, scale, centerX, {
+        outerHalfPx: outerHalf,
+        innerHalfPx: inner.halfOuter,
+        topDepth: topD,
+        bottomDepth: botD
+      }, {});
+    }
+
+    // Tubing
+    if (data.tubing?.sections?.length) {
+      const sections = data.tubing.sections.map((s, idx, arr) => ({
+        ...s,
+        isLast: idx === arr.length - 1
+      }));
+      drawTubing(svg, scale, centerX, sections, {});
+    }
+
+    // DHSV
+    if (data.tubing?.dhsvDepth != null) {
+      drawValve(svg, scale, centerX, { depthFt: Number(data.tubing.dhsvDepth), label: 'DHSV' });
+    }
+
+    // Packer
+    if (data.tubing?.packerDepth != null) {
+      drawPacker(svg, scale, centerX, { depthFt: Number(data.tubing.packerDepth) });
+    }
+
+    // Liner Hanger
+    const liner = casings.find(c => c.isLiner);
+    const host = casingGeom.find(g => !g.casing.isLiner && Number(g.casing.shoeDepth) >= (Number(liner?.hangerDepth) || 0));
+    if (liner && host) {
+      const linerOD = typeof liner.od === 'number' ? liner.od : parseOD(liner.od);
+      const linerHalf = halfWidthPxFromOD(linerOD);
+      drawLinerHanger(svg, scale, centerX, {
+        depthFt: Number(liner.hangerDepth) || 0,
+        outerHalfPxAtHost: host.halfInner,
+        linerHalfPx: linerHalf
+      }, {});
+    }
+
+    // Open hole
+    if (data.openHole?.topMd != null && data.openHole?.bottomMd != null) {
+      // In assenza di survey, visualizziamo intervallo MD come nota in verticale
+      const from = Number(data.openHole.topMd);
+      const to = Number(data.openHole.bottomMd);
+      // Ancoriamo l’open-hole da liner shoe in giù per la parte visibile
+      const linerShoe = Number(liner?.shoeDepth) || Math.min(scale.maxDepth, 8000);
+      drawOpenHole(svg, scale, centerX, { topDepthFt: linerShoe, bottomDepthFt: Math.min(scale.maxDepth, linerShoe + 800) }, {});
+      // Nota laterale MD
+      const ty = scale.y(linerShoe) - 14;
+      const txt = el('text', { x: centerX + 50, y: ty, 'font-size': 12, fill: Defaults.colors.labels });
+      txt.textContent = `Open hole MD: ${from}–${to} ft`;
+      svg.appendChild(txt);
+    }
+
+    return svg;
+  }
+
+  // ===== API pubblica ========================================================
+  window.WellDraw = {
+    parseOD,
+    DepthScale,
+    ensureDefs,
+    Defaults,
+    halfWidthPxFromOD,
+    drawDepthAxis,
+    drawCasing,
+    drawCementAnnulus,
+    drawTubing,
+    drawValve,
+    drawPacker,
+    drawLinerHanger,
+    drawOpenHole,
+    drawWellhead,
+    drawXmasTree,
+    drawWellSchematic,
+  };
+})();
+</script><!-- QUI devi incollare il modulo WellDraw completo che ti ho già fornito -->
+
+<script>
+// ===================== DATI REALI DEL POZZO EB‑33H =======================
+// (Tutti i valori derivano direttamente dal file che mi hai caricato) [1](https://proenergychieti-my.sharepoint.com/personal/federico_dalesio_proenergyonline_com/Documents/File%20di%20Microsoft%20Copilot%20Chat/Ragionamento%20Claude_well%20sketch.txt)
+
+const realData = {
+
+  // ====== CASINGS (dati reali) ======
+  casings: [
+    {
+      type: "Conductor 30\"",
+      od: "30",
+      shoeDepth: 319,
+      cementTopActual: 0
+    },
+    {
+      type: "Conductor 18 5/8\"",
+      od: "18 5/8",
+      shoeDepth: 1712,
+      cementTopActual: 0
+    },
+    {
+      type: "Surface 13 3/8\"",
+      od: "13 3/8",
+      shoeDepth: 3905,
+      cementTopActual: 0
+    },
+    {
+      type: "Production 9 5/8\"",
+      od: "9 5/8",
+      shoeDepth: 7429,
+      cementTopActual: 0
+    },
+    {
+      type: "Liner 7\"",
+      od: "7",
+      isLiner: true,
+      hangerDepth: 7138,
+      shoeDepth: 8773,
+      cementTopActual: 8773   // secondo i tuoi dati → coincide con shoe
+    }
+  ],
+
+  // ====== TUBING (dati reali) ======
+  tubing: {
+    sections: [
+      { od: "4 1/2", topDepth: 0, bottomDepth: 436 },
+      { od: "3 1/2", topDepth: 436, bottomDepth: 7802 }
+    ],
+    dhsvDepth: 316,     // DHSV reale
+    packerDepth: 7760   // packer reale
+  },
+
+  // ====== OPEN HOLE COMPLETION (dati reali) ======
+  openHole: {
+    topMd: 11330,
+    bottomMd: 12247
+  }
+};
+
+
+// ===================== SCALA PROFONDITÀ =======================
+
+const scale = new WellDraw.DepthScale({
+  surfaceYPx: 260,                        // top area per X-mas tree / wellhead
+  segments: [
+    { to: 500,  pxPerFt: 0.35 },          // più espanso per sezione superficiale
+    { to: 9000, pxPerFt: 0.08 }           // compressione profonda
+  ]
+});
+
+
+// ===================== DISEGNO COMPLETO =======================
+
+const svg = document.getElementById("schematic");
+
+WellDraw.drawWellSchematic(svg, realData, {
+  centerX: 420,     // centro pozzo nel canvas
+  scale: scale
+});
+
+</script>
+
+</body>
+</html>
