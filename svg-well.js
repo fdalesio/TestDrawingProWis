@@ -128,13 +128,9 @@ function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) 
   const boreH = height * 0.4;
 
   return [
-    // Bore stubs connecting valve body circle to the flange bars
+    // Bore stubs connecting valve body circle to the pipe
     svgSelf("rect", { x:-w2,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
     svgSelf("rect", { x:r-1,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-
-    // End flange bars
-    svgSelf("line", { x1:-w2, y1:-(r+1), x2:-w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
-    svgSelf("line", { x1: w2, y1:-(r+1), x2: w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
 
     // Valve body circle
     svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
@@ -154,10 +150,6 @@ function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } 
     // Bore stubs
     svgSelf("rect", { x:-w2, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
     svgSelf("rect", { x:r-1, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-
-    // Flange bars
-    svgSelf("line", { x1:-w2, y1:-(r+1), x2:-w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
-    svgSelf("line", { x1: w2, y1:-(r+1), x2: w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
 
     // Valve body circle
     svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
@@ -211,7 +203,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const originX = 260 * scale;
   const baselineY = 40 * scale;
   const pipeBore = 14 * scale, whH = 120 * scale, xtH = 180 * scale;
-  const valveW = 72 * scale, valveH = 28 * scale, wingLen = 160 * scale, annulusOffsetY = 40 * scale;
+  const valveW = 72 * scale, valveH = 28 * scale;
   let content = "";
 
   // ── X-mas tree (top) ──────────────────────────────────────────────────────
@@ -240,11 +232,12 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // Wing valves: kill (left), inner + hydro wing (right)
   const wingCenterY = xtY + xtH * 0.60; // UPDATED align with cross
+  const killX = originX - 72*scale;   // mirror of iwingX
   if (kill) {
     const y = wingCenterY;
-    content += group(originX, y, pipeHorizontal({ width: -(wingLen - 40*scale), bore: pipeBore }));
-    content += group(originX - 40*scale, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(kill), originX - 40*scale - (valveW/2 + 10), y, { anchor: "end", size: O.fontSize });
+    content += group(originX, y, pipeHorizontal({ width: -(72*scale + valveW/2), bore: pipeBore }));
+    content += group(killX, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
+    if (O.showLabels) content += label(valveLabel(kill), killX, y - (valveH/2 + 10), { anchor: "middle", size: O.fontSize });
   }
 
   // WGV(I) inner and WGV(H) hydraulic on the same right outlet, in series at wingCenterY
