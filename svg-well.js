@@ -210,7 +210,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const W = 900 * scale, H = 520 * scale;
   const originX = 260 * scale;
   const baselineY = 40 * scale;
-  const pipeBore = 14 * scale, whH = 120 * scale, xtH = 180 * scale, vGap = 16 * scale;
+  const pipeBore = 14 * scale, whH = 120 * scale, xtH = 180 * scale;
   const valveW = 72 * scale, valveH = 28 * scale, wingLen = 160 * scale, annulusOffsetY = 40 * scale;
   let content = "";
 
@@ -247,12 +247,21 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     if (O.showLabels) content += label(valveLabel(kill), originX - 40*scale - (valveW/2 + 10), y, { anchor: "end", size: O.fontSize });
   }
 
-  [iwing, hwing].filter(Boolean).forEach((v, i, arr) => {
-    const y = wingCenterY + (i * (valveH + vGap)) - (arr.length>1 ? valveH/2 : 0);
-    content += group(originX, y, pipeHorizontal({ width: (wingLen - 40*scale), bore: pipeBore }));
-    content += group(originX + (wingLen - 40*scale), y, valveGlyph(v?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(v), originX + (wingLen - 40*scale) + (valveW/2 + 10), y, { anchor: "start", size: O.fontSize, weight: 500 });
-  });
+  // WGV(I) inner and WGV(H) hydraulic on the same right outlet, in series at wingCenterY
+  const iwingX = originX + 72*scale;    // inner wing valve centre X (closer to tree)
+  const hwingX = originX + 148*scale;   // hydraulic wing valve centre X (further out)
+  const rightPipeEnd = (hwing ? hwingX : iwing ? iwingX : originX) + valveW/2;
+  if (iwing || hwing) {
+    content += group(originX, wingCenterY, pipeHorizontal({ width: rightPipeEnd - originX, bore: pipeBore }));
+  }
+  if (iwing) {
+    content += group(iwingX, wingCenterY, valveGlyph(iwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
+    if (O.showLabels) content += label(valveLabel(iwing), iwingX, wingCenterY - (valveH/2 + 10), { anchor: "middle", size: O.fontSize, weight: 500 });
+  }
+  if (hwing) {
+    content += group(hwingX, wingCenterY, valveGlyph(hwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
+    if (O.showLabels) content += label(valveLabel(hwing), hwingX, wingCenterY + (valveH/2 + 14), { anchor: "middle", size: O.fontSize, weight: 500 });
+  }
 
   // ── Connecting spool (xmas tree → wellhead) ───────────────────────────────
   content += group(originX, xtY + xtH, pipeVertical({ height: 30*scale, bore: pipeBore }));
