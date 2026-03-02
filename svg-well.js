@@ -1,4 +1,4 @@
-// svg-well.js 
+// svg-well.js generato da Copilot_02.03.2026
 // Modular SVG library for wellhead & xmas tree drawings
 // All functions return SVG strings. The main renderer returns a full <svg>.
 
