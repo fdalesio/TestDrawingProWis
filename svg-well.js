@@ -214,34 +214,20 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const valveW = 72 * scale, valveH = 28 * scale, wingLen = 160 * scale, annulusOffsetY = 40 * scale;
 
   let content = "";
-  // Colonna iniziale + WELLHEAD
+
+  // ── X-mas tree (top) ──────────────────────────────────────────────────────
+  // Short flowline stub above the xmas tree
   content += group(originX, baselineY, pipeVertical({ height: 40*scale, bore: pipeBore }));
-  content += group(originX, baselineY + 40*scale, wellheadBody({ height: whH, width: 80*scale }));
-
-  // Annulus sul Wellhead (impilati; il lato è letto dal JSON) 
-  const annBaseY = baselineY + 40*scale + annulusOffsetY;
-  [annA, annB].filter(Boolean).forEach((v, idx) => {
-    const side = v?.wellheadvalveside?.code || "right";
-    const sign = side === "left" ? -1 : 1;
-    const y = annBaseY + idx * (valveH + 14*scale);
-    const x = originX + sign * (50*scale);
-    content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: 10*scale }));
-    content += group(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(v), x + (sign>0 ? valveW/2+8 : -(valveW/2+8)), y, { anchor: sign>0 ? "start":"end", size: O.fontSize, weight: 500 });
-  });
-
-  // Colonna verso X‑mas tree
-  content += group(originX, baselineY + 40*scale + whH, pipeVertical({ height: 30*scale, bore: pipeBore }));
-  const xtY = baselineY + 40*scale + whH + 30*scale;
+  const xtY = baselineY + 40*scale;
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: 66*scale }));
 
-  // Master/Swab lungo la colonna
+  // Master / swab valves along the vertical bore
   const msvYB = xtY + xtH*0.15, msvYH = xtY + xtH*0.38, swabY = xtY + xtH*0.05;
   if (msvB) { content += group(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH })); if (O.showLabels) content += label(valveLabel(msvB), originX, msvYB - (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 }); }
   if (msvH) { content += group(originX, msvYH, valveGlyph(msvH?.xmastreevalvetype?.code, { width: valveW, height: valveH })); if (O.showLabels) content += label(valveLabel(msvH), originX, msvYH - (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 }); }
   if (swab) { content += group(originX, swabY,  valveGlyph(swab?.xmastreevalvetype?.code, { width: valveW, height: valveH })); if (O.showLabels) content += label(valveLabel(swab), originX, swabY -  (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 }); }
 
-  // Ali: sinistra Kill, destra Inner + Hydro
+  // Wing valves: kill (left), inner + hydro wing (right)
   const wingCenterY = xtY + xtH*0.50;
   if (kill) {
     const y = wingCenterY;
@@ -256,8 +242,27 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     if (O.showLabels) content += label(valveLabel(v), originX + (wingLen - 40*scale) + (valveW/2 + 10), y, { anchor: "start", size: O.fontSize, weight: 500 });
   });
 
-  // Tappo superiore
-  content += group(originX, xtY - 30*scale, pipeVertical({ height: 30*scale, bore: pipeBore }));
+  // ── Connecting spool (xmas tree → wellhead) ───────────────────────────────
+  content += group(originX, xtY + xtH, pipeVertical({ height: 30*scale, bore: pipeBore }));
+
+  // ── Wellhead (bottom) ─────────────────────────────────────────────────────
+  const whY = xtY + xtH + 30*scale;
+  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale }));
+
+  // Annulus valves on the wellhead sides
+  const annBaseY = whY + annulusOffsetY;
+  [annA, annB].filter(Boolean).forEach((v, idx) => {
+    const side = v?.wellheadvalveside?.code || "right";
+    const sign = side === "left" ? -1 : 1;
+    const y = annBaseY + idx * (valveH + 14*scale);
+    const x = originX + sign * (50*scale);
+    content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: 10*scale }));
+    content += group(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }));
+    if (O.showLabels) content += label(valveLabel(v), x + (sign>0 ? valveW/2+8 : -(valveW/2+8)), y, { anchor: sign>0 ? "start":"end", size: O.fontSize, weight: 500 });
+  });
+
+  // Short casing stub below wellhead (going into ground)
+  content += group(originX, whY + whH, pipeVertical({ height: 40*scale, bore: pipeBore }));
 
   // Header
   const title = `${data?.name || "Well"} — ${xt?.type || "X-mas Tree"}`;
