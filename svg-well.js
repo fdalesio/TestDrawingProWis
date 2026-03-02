@@ -121,17 +121,11 @@ function xmasTreeBody({ height=160, width=60 } = {}) {
 }
 
 // ---------- Valves ----------
-function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) {
-  const r  = height / 2;   // valve body circle radius
-  const w2 = width / 2;    // half-width to flange connection points
-  const d  = r * 0.707;    // 45° point on circle (r·sin 45°)
-  const boreH = height * 0.4;
+function gateValveManual({ height=26, color=THEME.manualValve } = {}) {
+  const r = height / 2;    // valve body circle radius
+  const d = r * 0.707;     // 45° point on circle (r·sin 45°)
 
   return [
-    // Bore stubs connecting valve body circle to the pipe
-    svgSelf("rect", { x:-w2,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-    svgSelf("rect", { x:r-1,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-
     // Valve body circle
     svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
 
@@ -141,16 +135,10 @@ function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) 
   ].join("");
 }
 
-function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } = {}) {
-  const r  = height / 2;   // valve body circle radius
-  const w2 = width / 2;
-  const boreH = height * 0.4;
+function gateValveHydraulic({ height=26, color=THEME.hydraulicValve } = {}) {
+  const r = height / 2;    // valve body circle radius
 
   return [
-    // Bore stubs
-    svgSelf("rect", { x:-w2, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-    svgSelf("rect", { x:r-1, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
-
     // Valve body circle
     svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
 
