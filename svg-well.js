@@ -60,19 +60,54 @@ function xmasTreeBody({ height=160, width=60, color=THEME.body }) {
     svgSelf("rect", { x:-width,   y:height*0.50 - cross/2, width: width*2, height: cross, fill: color, rx:8, ry:8, stroke: THEME.stroke, "stroke-width": 1 }),
   ].join("");
 }
-function gateValveManual({ width=60, height=26, color=THEME.manualValve }) {
+function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) {
+  const w2 = width/2, h2 = height/2;
+  const bonnetH = 10, stemLen = bonnetH + 14, hwR = 10;
+  const stemTop = -(h2 + stemLen);
+  const hwCy    = stemTop - hwR;
   return [
-    svgSelf("rect", { x:-width/2, y:-height/2, width, height, fill: color, rx:6, ry:6, stroke: THEME.stroke, "stroke-width": 1 }),
-    svgSelf("rect", { x:-2, y:-height/2 - (height*0.55), width:4, height: height*0.55, fill: THEME.stroke }),
-    svgSelf("circle", { cx:0, cy:-height*0.7, r:10, fill:"none", stroke: THEME.stroke, "stroke-width": 2 }),
-    svgSelf("line", { x1:-6, y1:-height*0.7, x2:6, y2:-height*0.7, stroke: THEME.stroke, "stroke-width": 2 }),
-    svgSelf("line", { x1:0, y1:-height*0.7-6, x2:0, y2:-height*0.7+6, stroke: THEME.stroke, "stroke-width": 2 }),
+    // Bowtie: left and right filled triangles (ISO 10628 / P&ID gate valve symbol)
+    svgSelf("polygon", { points:`${-w2},${-h2} ${-w2},${h2} 0,0`, fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    svgSelf("polygon", { points:`${w2},${-h2} ${w2},${h2} 0,0`,   fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    // End flange bars
+    svgSelf("line", { x1:-w2, y1:-h2-2, x2:-w2, y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1:w2,  y1:-h2-2, x2:w2,  y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    // Rising stem
+    svgSelf("line", { x1:0, y1:-h2, x2:0, y2:stemTop, stroke:THEME.stroke, "stroke-width":1.8 }),
+    // Bonnet / stuffing box
+    svgSelf("rect", { x:-5, y:-(h2+bonnetH), width:10, height:bonnetH, fill:THEME.flange, stroke:THEME.stroke, "stroke-width":1, rx:1 }),
+    // Handwheel rim
+    svgSelf("circle", { cx:0, cy:hwCy, r:hwR, fill:"none", stroke:THEME.stroke, "stroke-width":2 }),
+    // Handwheel hub
+    svgSelf("circle", { cx:0, cy:hwCy, r:2.5, fill:THEME.stroke }),
+    // Handwheel spokes
+    svgSelf("line", { x1:-hwR, y1:hwCy, x2:hwR, y2:hwCy, stroke:THEME.stroke, "stroke-width":1.5 }),
+    svgSelf("line", { x1:0, y1:hwCy-hwR, x2:0, y2:hwCy+hwR, stroke:THEME.stroke, "stroke-width":1.5 }),
   ].join("");
 }
-function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve }) {
+function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } = {}) {
+  const w2 = width/2, h2 = height/2;
+  const stemConn = 5;
+  const actW = width * 0.65, actH = height * 0.95;
+  const actBot = -(h2 + stemConn);
+  const actTop = actBot - actH;
   return [
-    svgSelf("rect", { x:-width/2, y:-height/2, width, height, fill: color, rx:6, ry:6, stroke: THEME.stroke, "stroke-width": 1 }),
-    svgSelf("rect", { x:-width*0.25, y:-height/2 - 14, width: width*0.5, height: 14, fill: "#10B981", stroke: THEME.stroke, "stroke-width": 1, rx:3, ry:3 }),
+    // Bowtie: left and right filled triangles
+    svgSelf("polygon", { points:`${-w2},${-h2} ${-w2},${h2} 0,0`, fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    svgSelf("polygon", { points:`${w2},${-h2} ${w2},${h2} 0,0`,   fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    // End flange bars
+    svgSelf("line", { x1:-w2, y1:-h2-2, x2:-w2, y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1:w2,  y1:-h2-2, x2:w2,  y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    // Stem connector
+    svgSelf("line", { x1:0, y1:-h2, x2:0, y2:actBot, stroke:THEME.stroke, "stroke-width":2 }),
+    // Actuator body (hydraulic cylinder)
+    svgSelf("rect", { x:-actW/2, y:actTop, width:actW, height:actH, fill:color, stroke:THEME.stroke, "stroke-width":1.5, rx:3 }),
+    // Actuator cap (dark top band)
+    svgSelf("rect", { x:-actW/2+1, y:actTop+1, width:actW-2, height:actH*0.22, fill:"#065f46", stroke:"none", rx:2 }),
+    // Hydraulic port nub (right side)
+    svgSelf("rect", { x:actW/2, y:actTop+actH*0.38, width:5, height:actH*0.28, fill:"#065f46", stroke:THEME.stroke, "stroke-width":1, rx:1 }),
+    // "H" label
+    svgEl("text", { x:0, y:actTop+actH*0.65, "text-anchor":"middle", "dominant-baseline":"middle", "font-size":Math.max(Math.floor(actH*0.4),8), "font-weight":"bold", fill:"#ffffff", "font-family":"system-ui, sans-serif" }, "H"),
   ].join("");
 }
 
