@@ -170,10 +170,31 @@ function valveGlyph(typeCode, opts={}) {
   return gateValveManual(opts);
 }
 
-function valveLabel(valve) {
-  const dim = valve?.valvedata?.dimension ? ` ${String(valve.valvedata.dimension).replace(/"/g,"″")}` : "";
-  const wp  = valve?.valvedata?.working_pressure ? ` · ${valve.valvedata.working_pressure} psi` : "";
-  return `${valve?.acronym ?? valve?.name ?? "VALVE"}${dim}${wp}`;
+// Build the data payload stored on each clickable valve group
+function valveInfo(valve) {
+  const vd  = valve?.valvedata ?? {};
+  const typ = valve?.xmastreevalvetype ?? valve?.wellheadvalvetype ?? {};
+  return {
+    name:                valve?.name ?? typ.name ?? "Valve",
+    acronym:             valve?.acronym ?? typ.acronym ?? "",
+    type:                typ.name ?? "",
+    description:         valve?.description ?? "",
+    installation_year:   valve?.installation_year ?? null,
+    dimension:           vd.dimension    ? String(vd.dimension).replace(/"/g, "″") : null,
+    working_pressure:    vd.working_pressure   ?? null,
+    allowable_leak_rate: vd.allowable_leak_rate ?? null,
+    manufacturer:        vd.type_manufacturer  ?? null,
+  };
+}
+
+// Wrap a glyph in a clickable <g> carrying valve data as a JSON attribute
+function valveClickGroup(x, y, glyphSvg, info) {
+  return svgEl("g", {
+    class: "wv-valve",
+    "data-valve": JSON.stringify(info),
+    style: "cursor:pointer",
+    transform: `translate(${x} ${y})`,
+  }, glyphSvg);
 }
 
 // ---------- Main renderer ----------
@@ -213,18 +234,9 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const msvYH = xtY + xtH * 0.35;   // 35% upper master
   const msvYB = xtY + xtH * 0.75;   // 75% lower master — below wing valves
 
-  if (msvB) {
-    content += group(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(msvB), originX, msvYB - (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 });
-  }
-  if (msvH) {
-    content += group(originX, msvYH, valveGlyph(msvH?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(msvH), originX, msvYH - (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 });
-  }
-  if (swab) {
-    content += group(originX, swabY, valveGlyph(swab?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(swab), originX, swabY - (valveH/2 + 12), { anchor:"middle", size: O.fontSize, weight: 600 });
-  }
+  if (msvB) content += valveClickGroup(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvB));
+  if (msvH) content += valveClickGroup(originX, msvYH, valveGlyph(msvH?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvH));
+  if (swab) content += valveClickGroup(originX, swabY,  valveGlyph(swab?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(swab));
 
   // Wing valves: kill (left), inner + hydro wing (right)
   const wingCenterY = xtY + xtH * 0.60; // UPDATED align with cross
@@ -232,8 +244,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   if (kill) {
     const y = wingCenterY;
     content += group(originX, y, pipeHorizontal({ width: -(72*scale + valveW/2), bore: pipeBore }));
-    content += group(killX, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(kill), killX, y - (valveH/2 + 10), { anchor: "middle", size: O.fontSize });
+    content += valveClickGroup(killX, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(kill));
   }
 
   // WGV(I) inner and WGV(H) hydraulic on the same right outlet, in series at wingCenterY
@@ -243,14 +254,8 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   if (iwing || hwing) {
     content += group(originX, wingCenterY, pipeHorizontal({ width: rightPipeEnd - originX, bore: pipeBore }));
   }
-  if (iwing) {
-    content += group(iwingX, wingCenterY, valveGlyph(iwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(iwing), iwingX, wingCenterY - (valveH/2 + 10), { anchor: "middle", size: O.fontSize, weight: 500 });
-  }
-  if (hwing) {
-    content += group(hwingX, wingCenterY, valveGlyph(hwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(hwing), hwingX, wingCenterY + (valveH/2 + 14), { anchor: "middle", size: O.fontSize, weight: 500 });
-  }
+  if (iwing) content += valveClickGroup(iwingX, wingCenterY, valveGlyph(iwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(iwing));
+  if (hwing) content += valveClickGroup(hwingX, wingCenterY, valveGlyph(hwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(hwing));
 
   // ── Wellhead (bottom) ─────────────────────────────────────────────────────
   const whY = xtY + xtH;
@@ -264,8 +269,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     const y = annBaseY + idx * (valveH + 14*scale);
     const x = originX + sign * (50*scale);
     content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: pipeBore }));
-    content += group(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }));
-    if (O.showLabels) content += label(valveLabel(v), x + (sign>0 ? valveW/2+8 : -(valveW/2+8)), y, { anchor: sign>0 ? "start":"end", size: O.fontSize, weight: 500 });
+    content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
   });
 
   // Short casing stub below wellhead (into ground)
@@ -303,3 +307,73 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
 // Export base elements as well
 export const Elements = { pipeVertical, pipeHorizontal, flange, wellheadBody, xmasTreeBody, gateValveManual, gateValveHydraulic };
+
+// ---------- Valve balloon ----------
+// Call once after the SVG is inserted into the DOM.
+// container = the element that wraps the <svg> (or the <svg> itself).
+export function mountValveBalloon(container) {
+  let b = document.getElementById("wv-balloon");
+  if (!b) {
+    b = document.createElement("div");
+    b.id = "wv-balloon";
+    Object.assign(b.style, {
+      position: "fixed", display: "none", zIndex: "9999",
+      background: "#ffffff", border: "1px solid #D1D5DB",
+      borderRadius: "10px", boxShadow: "0 6px 24px rgba(0,0,0,.18)",
+      padding: "14px 16px", minWidth: "220px", maxWidth: "300px",
+      fontFamily: "Inter, system-ui, sans-serif", fontSize: "13px",
+      color: "#111827", lineHeight: "1.5",
+    });
+    document.body.appendChild(b);
+  }
+
+  const hide = () => { b.style.display = "none"; };
+
+  container.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-valve]");
+    if (!g) { hide(); return; }
+
+    const info = JSON.parse(g.dataset.valve);
+    const rows = [
+      ["Type",                 info.type],
+      ["Description",          info.description],
+      ["Installed",            info.installation_year],
+      ["Dimension",            info.dimension],
+      ["Working Pressure",     info.working_pressure    ? `${info.working_pressure} psi`    : null],
+      ["Allowable Leak Rate",  info.allowable_leak_rate ? `${info.allowable_leak_rate} cc/min` : null],
+      ["Manufacturer",         info.manufacturer],
+    ].filter(([, v]) => v != null && v !== "");
+
+    b.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                  margin-bottom:8px;border-bottom:1px solid #E5E7EB;padding-bottom:7px">
+        <span style="font-weight:700;font-size:14px">${info.name}</span>
+        <span style="font-size:11px;font-weight:600;color:#6B7280;background:#F3F4F6;
+                     padding:2px 6px;border-radius:4px;margin-left:8px">${info.acronym}</span>
+      </div>
+      <table style="border-collapse:collapse;width:100%">
+        ${rows.map(([k, v]) => `
+        <tr>
+          <td style="color:#6B7280;padding:2px 10px 2px 0;white-space:nowrap;
+                     vertical-align:top;font-size:12px">${k}</td>
+          <td style="padding:2px 0;font-weight:500">${v}</td>
+        </tr>`).join("")}
+      </table>`;
+
+    // Position next to the valve, staying within the viewport
+    const rect = g.getBoundingClientRect();
+    const bw   = 300;
+    let left   = rect.right + 12;
+    let top    = rect.top   - 8;
+    if (left + bw > window.innerWidth  - 8) left = rect.left - bw - 12;
+    if (top  + 220 > window.innerHeight - 8) top = window.innerHeight - 228;
+    if (top < 8) top = 8;
+    b.style.left    = `${left}px`;
+    b.style.top     = `${top}px`;
+    b.style.display = "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-valve]") && !e.target.closest("#wv-balloon")) hide();
+  });
+}

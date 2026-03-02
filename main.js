@@ -1,5 +1,5 @@
 // main.js
-import { renderWellSurfaceSvg } from "./svg-well.js";
+import { renderWellSurfaceSvg, mountValveBalloon } from "./svg-well.js";
 
 // Carica il tuo JSON (stesso schema del file che hai caricato) 
 const resp = await fetch("./well_data.json");
@@ -13,7 +13,9 @@ const svg = renderWellSurfaceSvg(wellData, {
 });
 
 // Inserisce lo SVG in pagina
-document.getElementById("app").innerHTML = svg;
+const appEl = document.getElementById("app");
+appEl.innerHTML = svg;
+mountValveBalloon(appEl.querySelector("svg"));
 
 // Pulsante per scaricare lo SVG
 document.getElementById("downloadBtn").addEventListener("click", () => {
