@@ -171,7 +171,6 @@ function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) 
 function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } = {}) {
   const r  = height / 2;   // valve body circle radius
   const w2 = width / 2;
-  const d  = r * 0.707;    // 45° point on circle
 
   const stemConn = 3;
   const actW = width * 0.52;
@@ -193,9 +192,11 @@ function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } 
     // Valve body circle
     svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
 
-    // Gate valve X symbol
-    svgSelf("line", { x1:-d, y1:-d, x2: d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
-    svgSelf("line", { x1: d, y1:-d, x2:-d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
+    // Center white dot with H label
+    svgSelf("circle", { cx:0, cy:0, r:r*0.55, fill:"#ffffff", stroke:THEME.stroke, "stroke-width":1 }),
+    svgEl("text", { x:0, y:0, "text-anchor":"middle", "dominant-baseline":"middle",
+      "font-size": Math.max(Math.floor(r*0.75), 6), "font-weight":"bold",
+      fill:color, "font-family":"system-ui, sans-serif" }, "H"),
 
     // Stem connector (from valve body top to actuator bottom)
     svgSelf("line", { x1:0, y1:-r, x2:0, y2:actBot, stroke:THEME.stroke, "stroke-width":2 }),
