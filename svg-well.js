@@ -58,7 +58,7 @@ function flange({ outer=26, inner=12, thickness=10, body=THEME.flange }) {
   ].join("");
 }
 
-function wellheadBody({ height=100, width=70 } = {}) {
+function wellheadBody({ height=100, width=70, topFlangeOuter } = {}) {
   const h = height, w = width;
   const fl = 10, fb = 9, bore = Math.round(w * 0.175);
   // Three stacked sections from top (xmas tree connection) to bottom (ground):
@@ -83,8 +83,15 @@ function wellheadBody({ height=100, width=70 } = {}) {
     svgSelf("rect", { x:-w2/2, y:y2, width:w2, height:s2h, fill, stroke:THEME.stroke, "stroke-width":1 }),
     // Casing head (bottom, full width)
     svgSelf("rect", { x:-w3/2, y:y3, width:w3, height:s3h, fill, stroke:THEME.stroke, "stroke-width":1 }),
-    // Top flange — connection to xmas tree
-    fbar(fb/2, w1), bolts(fb/2, w1, 6),
+    // Top flange — connection to xmas tree (width matches XT bottom flange when topFlangeOuter is set)
+    ...(() => {
+      const tfo = topFlangeOuter ?? (w1 + fl * 2);
+      const span = tfo - 12, n = 6;
+      return [
+        svgSelf("rect", { x:-tfo/2, y:0, width:tfo, height:fb, fill:fillF, stroke:THEME.stroke, "stroke-width":1 }),
+        ...Array.from({length:n}, (_,i) => svgSelf("circle", { cx:-tfo/2+6+i*(n>1?span/(n-1):0), cy:fb/2, r:2.2, fill:"#111827", stroke:"#374151", "stroke-width":0.5 })),
+      ];
+    })(),
     // Junction flange s1 → s2
     fbar(y2, w2), bolts(y2, w2, 7),
     // Junction flange s2 → s3
@@ -120,7 +127,7 @@ function xmasTreeBody({ height=160, width=60 } = {}) {
     // Flanges + bolt rows
     fbar(capH, w), bolts(capH, w, 6),
     fbar(crossY, crossW), bolts(crossY, crossW, 10),
-    fbar(h, w), bolts(h, w, 8),
+    fbar(h - fb/2, w), bolts(h - fb/2, w, 8),
     // Vertical through-bore
     svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
     // Horizontal bore (wing outlets)
@@ -227,7 +234,8 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   // Short flowline stub above the xmas tree
   content += group(originX, baselineY, pipeVertical({ height: 40*scale, bore: pipeBore }));
   const xtY = baselineY + 40*scale;
-  content += group(originX, xtY, xmasTreeBody({ height: xtH, width: 66*scale }));
+  const xtBodyW = 66*scale;  // xmas tree body width (fl=8 inside, so bottom flange outer = xtBodyW + 16)
+  content += group(originX, xtY, xmasTreeBody({ height: xtH, width: xtBodyW }));
 
   // Valve positions along the vertical bore
   const swabY = xtY + xtH * 0.18;   // 18% — clear of top cap flange
@@ -259,7 +267,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // ── Wellhead (bottom) ─────────────────────────────────────────────────────
   const whY = xtY + xtH;
-  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale }));
+  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16 }));
 
   // Annulus valves on the wellhead sides
   const annBaseY = whY + 40*scale;
