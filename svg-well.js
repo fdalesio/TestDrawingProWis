@@ -122,69 +122,85 @@ function xmasTreeBody({ height=160, width=60 } = {}) {
 
 // ---------- Valves ----------
 function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) {
-  const w2 = width / 2;
-  const h2 = height / 2;
+  const r  = height / 2;   // valve body circle radius
+  const w2 = width / 2;    // half-width to flange connection points
+  const d  = r * 0.707;    // 45° point on circle (r·sin 45°)
 
-  // Compact geometry
-  const bonnetH = 6;      // shorter bonnet
-  const stemH   = 7;      // shorter stem for better connection
-  const rx = 11;          // ellipse horizontal radius
-  const ry = 3;           // ellipse vertical radius (flattened)
+  // Handwheel: front-view circular wheel above bonnet
+  const bonnetH  = 5;
+  const stemLen  = 5;
+  const hwR      = Math.round(r * 0.9);   // handwheel rim radius
+  const bonnetTop = -(r + bonnetH);
+  const hwCy      = bonnetTop - stemLen - hwR;
 
-  const stemTop = -(h2 + bonnetH + stemH);
-  const hwCy    = stemTop - ry - 1;  // small gap
+  const boreH = height * 0.4;   // height of bore stubs
 
   return [
-    // Bowtie: left and right filled triangles (P&ID gate valve symbol)
-    svgSelf("polygon", { points:`${-w2},${-h2} ${-w2},${h2} 0,0`, fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
-    svgSelf("polygon", { points:`${w2},${-h2} ${w2},${h2} 0,0`,  fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    // Bore stubs connecting valve body circle to the flange bars
+    svgSelf("rect", { x:-w2,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
+    svgSelf("rect", { x:r-1,  y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
 
     // End flange bars
-    svgSelf("line", { x1:-w2, y1:-h2-2, x2:-w2, y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
-    svgSelf("line", { x1:w2,  y1:-h2-2, x2:w2,  y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1:-w2, y1:-(r+1), x2:-w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1: w2, y1:-(r+1), x2: w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
 
-    // Rising stem
-    svgSelf("line", { x1:0, y1:-h2, x2:0, y2:-(h2+bonnetH+stemH), stroke:THEME.stroke, "stroke-width":1.8 }),
+    // Valve body circle
+    svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
 
-    // Bonnet / stuffing box
-    svgSelf("rect", { x:-5, y:-(h2+bonnetH), width:10, height:bonnetH, fill:THEME.flange, stroke:THEME.stroke, "stroke-width":1, rx:1 }),
+    // Gate valve X symbol (diagonals inscribed in the circle)
+    svgSelf("line", { x1:-d, y1:-d, x2: d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
+    svgSelf("line", { x1: d, y1:-d, x2:-d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
 
-    // Handwheel: flattened ellipse (looks like wheel, not gauge)
-    svgSelf("ellipse", { cx:0, cy:hwCy, rx, ry, fill:"none", stroke:THEME.stroke, "stroke-width":2 }),
+    // Stem (from valve body top through bonnet to handwheel)
+    svgSelf("line", { x1:0, y1:-r, x2:0, y2:hwCy, stroke:THEME.stroke, "stroke-width":1.5 }),
 
+    // Bonnet box
+    svgSelf("rect", { x:-4, y:bonnetTop, width:8, height:bonnetH,
+      fill:THEME.flange, stroke:THEME.stroke, "stroke-width":1, rx:1 }),
+
+    // Handwheel rim
+    svgSelf("circle", { cx:0, cy:hwCy, r:hwR, fill:"none", stroke:THEME.stroke, "stroke-width":2 }),
     // Hub
-    svgSelf("circle", { cx:0, cy:hwCy, r:2, fill:THEME.stroke }),
-
-    // T-bar spokes
-    svgSelf("line", { x1:-rx, y1:hwCy, x2:rx, y2:hwCy, stroke:THEME.stroke, "stroke-width":1.4 }),
-    svgSelf("line", { x1:0, y1:hwCy-ry-2, x2:0, y2:hwCy+ry+2, stroke:THEME.stroke, "stroke-width":1.3 }),
+    svgSelf("circle", { cx:0, cy:hwCy, r:2.5, fill:THEME.stroke }),
+    // Cross spokes
+    svgSelf("line", { x1:-hwR, y1:hwCy, x2:hwR, y2:hwCy, stroke:THEME.stroke, "stroke-width":1.5 }),
+    svgSelf("line", { x1:0, y1:hwCy-hwR, x2:0, y2:hwCy+hwR, stroke:THEME.stroke, "stroke-width":1.5 }),
   ].join("");
 }
 
 function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } = {}) {
-  const w2 = width/2, h2 = height/2;
+  const r  = height / 2;   // valve body circle radius
+  const w2 = width / 2;
+  const d  = r * 0.707;    // 45° point on circle
 
-  // More compact actuator
   const stemConn = 3;
   const actW = width * 0.52;
   const actH = height * 0.55;
-
-  const actBot = -(h2 + stemConn);
+  const actBot = -(r + stemConn);
   const actTop = actBot - actH;
 
+  const boreH = height * 0.4;
+
   return [
-    // Bowtie
-    svgSelf("polygon", { points:`${-w2},${-h2} ${-w2},${h2} 0,0`, fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
-    svgSelf("polygon", { points:`${w2},${-h2} ${w2},${h2} 0,0`,  fill:color, stroke:THEME.stroke, "stroke-width":1.5, "stroke-linejoin":"miter" }),
+    // Bore stubs
+    svgSelf("rect", { x:-w2, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
+    svgSelf("rect", { x:r-1, y:-boreH/2, width:w2-r+1, height:boreH, fill:color }),
 
     // Flange bars
-    svgSelf("line", { x1:-w2, y1:-h2-2, x2:-w2, y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
-    svgSelf("line", { x1:w2,  y1:-h2-2, x2:w2,  y2:h2+2, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1:-w2, y1:-(r+1), x2:-w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
+    svgSelf("line", { x1: w2, y1:-(r+1), x2: w2, y2:r+1, stroke:THEME.stroke, "stroke-width":3 }),
 
-    // Stem connector (short)
-    svgSelf("line", { x1:0, y1:-h2, x2:0, y2:actBot, stroke:THEME.stroke, "stroke-width":2 }),
+    // Valve body circle
+    svgSelf("circle", { cx:0, cy:0, r, fill:color, stroke:THEME.stroke, "stroke-width":1.5 }),
 
-    // Compact actuator body
+    // Gate valve X symbol
+    svgSelf("line", { x1:-d, y1:-d, x2: d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
+    svgSelf("line", { x1: d, y1:-d, x2:-d, y2: d, stroke:THEME.stroke, "stroke-width":1.5 }),
+
+    // Stem connector (from valve body top to actuator bottom)
+    svgSelf("line", { x1:0, y1:-r, x2:0, y2:actBot, stroke:THEME.stroke, "stroke-width":2 }),
+
+    // Actuator body
     svgSelf("rect", { x:-actW/2, y:actTop, width:actW, height:actH, fill:color, stroke:THEME.stroke, "stroke-width":1.3, rx:2 }),
 
     // Top band
@@ -194,7 +210,9 @@ function gateValveHydraulic({ width=60, height=26, color=THEME.hydraulicValve } 
     svgSelf("rect", { x:actW/2, y:actTop+actH*0.38, width:5, height:actH*0.28, fill:"#065f46", stroke:THEME.stroke, "stroke-width":1, rx:1 }),
 
     // "H" label
-    svgEl("text", { x:0, y:actTop+actH*0.6, "text-anchor":"middle", "dominant-baseline":"middle", "font-size": Math.max(Math.floor(actH*0.5),7), "font-weight":"bold", fill:"#ffffff", "font-family":"system-ui, sans-serif" }, "H"),
+    svgEl("text", { x:0, y:actTop+actH*0.6, "text-anchor":"middle", "dominant-baseline":"middle",
+      "font-size": Math.max(Math.floor(actH*0.5),7), "font-weight":"bold",
+      fill:"#ffffff", "font-family":"system-ui, sans-serif" }, "H"),
   ].join("");
 }
 
