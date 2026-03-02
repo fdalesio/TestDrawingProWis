@@ -65,7 +65,7 @@ function wellheadBody({ height=100, width=70 } = {}) {
   //   s1: tubing head spool — smallest  (annulus A side outlet)
   //   s2: annulus B spool   — slightly bigger
   //   s3: casing head       — full width
-  const s1h = h * 0.55, s2h = h * 0.25, s3h = h * 0.20;
+  const s1h = h / 3, s2h = h / 3, s3h = h / 3;
   const w1 = w * 0.65, w2 = w * 0.80, w3 = w;
   const y2 = s1h, y3 = s1h + s2h;
   const fill = `url(#${GID.metal})`, fillF = `url(#${GID.flange})`;
@@ -195,10 +195,10 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // Canvas & layout
   const scale = O.scale;
-  const W = 900 * scale, H = 520 * scale;
+  const W = 900 * scale, H = 580 * scale;
   const originX = 260 * scale;
   const baselineY = 40 * scale;
-  const pipeBore = 11 * scale, whH = 120 * scale, xtH = 240 * scale;
+  const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
   const valveW = 72 * scale, valveH = 28 * scale;
   let content = "";
 
@@ -298,7 +298,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 </defs>`;
 
   const defs = svgEl("style", {}, `.tick{stroke:${T.stroke};stroke-width:${O.strokeWidth};}`) + gradDefs;
-  return svgEl("svg", { xmlns:"http://www.w3.org/2000/svg", viewBox:`0 0 ${900*scale} ${520*scale}`, width:900*scale, height:520*scale, style:`background:${T.bg}` }, defs + header + content);
+  return svgEl("svg", { xmlns:"http://www.w3.org/2000/svg", viewBox:`0 0 ${W} ${H}`, width:W, height:H, style:`background:${T.bg}` }, defs + header + content);
 }
 
 // Export base elements as well
