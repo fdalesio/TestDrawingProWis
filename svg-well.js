@@ -17,6 +17,9 @@ const THEME = {
 };
 const defaultOpts = { scale: 1.0, strokeWidth: 1.5, fontSize: 11, showLabels: true, theme: THEME };
 
+// Gradient IDs referenced by body-drawing functions (defined once in the SVG <defs>)
+const GID = { metal: "g_metal", flange: "g_flange" };
+
 const svgEl = (tag, attrs = {}, children = "") =>
   `<${tag} ${Object.entries(attrs).map(([k,v]) => `${k}="${String(v).replace(/"/g,"&quot;")}"`).join(" ")}>${children}</${tag}>`;
 const svgSelf = (tag, attrs = {}) =>
@@ -47,17 +50,71 @@ function flange({ outer=26, inner=12, thickness=10, body=THEME.flange }) {
     svgSelf("circle", { cx: 0, cy: thickness/2, r: r2, fill: THEME.pipe })
   ].join("");
 }
-function wellheadBody({ height=100, width=70, color=THEME.body }) {
+function wellheadBody({ height=100, width=70 } = {}) {
+  const h = height, w = width;
+  const fl = 10, fb = 9, bore = Math.round(w * 0.175);
+  // Two stacked sections: wider casing head (bottom) + narrower tubing head spool (top)
+  const s1h = h * 0.58, s2h = h * 0.42;
+  const w1 = w, w2 = w * 0.78;
+  const fill = `url(#${GID.metal})`, fillF = `url(#${GID.flange})`;
+
+  // Flanged band centered on y
+  const fbar = (y, bw) =>
+    svgSelf("rect", { x:-(bw/2+fl), y:y-fb/2, width:bw+fl*2, height:fb, fill:fillF, stroke:THEME.stroke, "stroke-width":1 });
+  // Bolt-hole row centered on cy
+  const bolts = (cy, bw, n) => {
+    const span = bw + fl*2 - 12;
+    return Array.from({length:n}, (_,i) =>
+      svgSelf("circle", { cx:-(bw/2+fl-6)+i*(n>1?span/(n-1):0), cy, r:2.2, fill:"#111827", stroke:"#374151", "stroke-width":0.5 })
+    ).join("");
+  };
+
   return [
-    svgSelf("rect", { x:-width/2, y:0, width, height, fill: color, rx:8, ry:8, stroke: THEME.stroke, "stroke-width": 1 }),
-    flange({ outer: width+20, inner: 14, thickness: 12 }),
+    // Casing head body (wider, lower 58%)
+    svgSelf("rect", { x:-w1/2, y:0, width:w1, height:s1h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Tubing head spool body (narrower, upper 42%)
+    svgSelf("rect", { x:-w2/2, y:s1h, width:w2, height:s2h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Bottom flange
+    fbar(fb/2, w1),         bolts(fb/2, w1, 8),
+    // Mid flange — casing head / tubing head junction
+    fbar(s1h, w1),          bolts(s1h, w1, 8),
+    // Top flange — connection to xmas tree
+    fbar(h - fb/2, w2),     bolts(h - fb/2, w2, 6),
+    // Through-bore (tubing)
+    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
   ].join("");
 }
-function xmasTreeBody({ height=160, width=60, color=THEME.body }) {
-  const cross = 28;
+function xmasTreeBody({ height=160, width=60 } = {}) {
+  const h = height, w = width;
+  const fl = 8, fb = 8, bore = Math.round(w * 0.16);
+  const crossY = h * 0.50, crossW = w * 1.85, crossH = 20;
+  const capH = Math.round(h * 0.08);   // swab-cap stub at top
+  const fill = `url(#${GID.metal})`, fillF = `url(#${GID.flange})`;
+
+  const fbar = (y, bw, bh=fb) =>
+    svgSelf("rect", { x:-(bw/2+fl), y:y-bh/2, width:bw+fl*2, height:bh, fill:fillF, stroke:THEME.stroke, "stroke-width":1 });
+  const bolts = (cy, bw, n) => {
+    const span = bw + fl*2 - 12;
+    return Array.from({length:n}, (_,i) =>
+      svgSelf("circle", { cx:-(bw/2+fl-6)+i*(n>1?span/(n-1):0), cy, r:2, fill:"#111827", stroke:"#374151", "stroke-width":0.5 })
+    ).join("");
+  };
+
   return [
-    svgSelf("rect", { x:-width/2, y:0, width, height, fill: color, rx:8, ry:8, stroke: THEME.stroke, "stroke-width": 1 }),
-    svgSelf("rect", { x:-width,   y:height*0.50 - cross/2, width: width*2, height: cross, fill: color, rx:8, ry:8, stroke: THEME.stroke, "stroke-width": 1 }),
+    // Main vertical body column
+    svgSelf("rect", { x:-w/2, y:0, width:w, height:h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Cross / tee bar for wing valve outlets
+    svgSelf("rect", { x:-crossW/2, y:crossY-crossH/2, width:crossW, height:crossH, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Top cap stub (swab cap)
+    svgSelf("rect", { x:-(w*0.55)/2, y:0, width:w*0.55, height:capH, fill:fillF, stroke:THEME.stroke, "stroke-width":1.5, rx:2 }),
+    // Flanges + bolt rows
+    fbar(capH, w),          bolts(capH, w, 6),      // below swab cap
+    fbar(crossY, crossW),   bolts(crossY, crossW, 10), // cross bar
+    fbar(h, w),             bolts(h, w, 8),          // bottom (to wellhead)
+    // Vertical through-bore
+    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
+    // Horizontal bore (wing outlets)
+    svgSelf("rect", { x:-crossW/2, y:crossY-bore/2, width:crossW, height:bore, fill:"#111827", rx:bore/2 }),
   ].join("");
 }
 function gateValveManual({ width=60, height=26, color=THEME.manualValve } = {}) {
@@ -212,7 +269,23 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   if (subtitle) header += label(subtitle, 24*scale, 26*scale + 18, { size: O.fontSize, color: "#4B5563" });
   header += label(whInfo, 24*scale, 26*scale + 36, { size: O.fontSize, color: "#4B5563" });
 
-  const defs = svgEl("style", {}, `.tick{stroke:${T.stroke};stroke-width:${O.strokeWidth};}`);
+  const gradDefs = `<defs>
+    <linearGradient id="${GID.metal}" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%"   stop-color="#374151"/>
+      <stop offset="25%"  stop-color="#9CA3AF"/>
+      <stop offset="50%"  stop-color="#E5E7EB"/>
+      <stop offset="75%"  stop-color="#9CA3AF"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+    <linearGradient id="${GID.flange}" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%"   stop-color="#1F2937"/>
+      <stop offset="30%"  stop-color="#6B7280"/>
+      <stop offset="50%"  stop-color="#D1D5DB"/>
+      <stop offset="70%"  stop-color="#6B7280"/>
+      <stop offset="100%" stop-color="#1F2937"/>
+    </linearGradient>
+  </defs>`;
+  const defs = svgEl("style", {}, `.tick{stroke:${T.stroke};stroke-width:${O.strokeWidth};}`) + gradDefs;
   return svgEl("svg", { xmlns:"http://www.w3.org/2000/svg", viewBox:`0 0 ${900*scale} ${520*scale}`, width:900*scale, height:520*scale, style:`background:${T.bg}` }, defs + header + content);
 }
 
