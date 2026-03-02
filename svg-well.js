@@ -4,7 +4,7 @@
 
 // ---------- Theme & Defaults ----------
 const THEME = {
-  pipe: "#374151",
+  pipe: "#111827",
   body: "#9CA3AF",
   flange: "#6B7280",
   manualValve: "#2563EB",
@@ -190,7 +190,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const W = 900 * scale, H = 520 * scale;
   const originX = 260 * scale;
   const baselineY = 40 * scale;
-  const pipeBore = 14 * scale, whH = 120 * scale, xtH = 180 * scale;
+  const pipeBore = 11 * scale, whH = 120 * scale, xtH = 180 * scale;
   const valveW = 72 * scale, valveH = 28 * scale;
   let content = "";
 
@@ -244,11 +244,8 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     if (O.showLabels) content += label(valveLabel(hwing), hwingX, wingCenterY + (valveH/2 + 14), { anchor: "middle", size: O.fontSize, weight: 500 });
   }
 
-  // ── Connecting spool (xmas tree → wellhead) ───────────────────────────────
-  content += group(originX, xtY + xtH, pipeVertical({ height: 30*scale, bore: pipeBore }));
-
   // ── Wellhead (bottom) ─────────────────────────────────────────────────────
-  const whY = xtY + xtH + 30*scale;
+  const whY = xtY + xtH;
   content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale }));
 
   // Annulus valves on the wellhead sides
@@ -258,7 +255,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     const sign = side === "left" ? -1 : 1;
     const y = annBaseY + idx * (valveH + 14*scale);
     const x = originX + sign * (50*scale);
-    content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: 10*scale }));
+    content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: pipeBore }));
     content += group(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }));
     if (O.showLabels) content += label(valveLabel(v), x + (sign>0 ? valveW/2+8 : -(valveW/2+8)), y, { anchor: sign>0 ? "start":"end", size: O.fontSize, weight: 500 });
   });
