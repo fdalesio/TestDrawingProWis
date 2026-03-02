@@ -61,9 +61,13 @@ function flange({ outer=26, inner=12, thickness=10, body=THEME.flange }) {
 function wellheadBody({ height=100, width=70 } = {}) {
   const h = height, w = width;
   const fl = 10, fb = 9, bore = Math.round(w * 0.175);
-  // Two stacked sections: wider casing head (bottom) + narrower tubing head spool (top)
-  const s1h = h * 0.58, s2h = h * 0.42;
-  const w1 = w, w2 = w * 0.78;
+  // Three stacked sections from top (xmas tree connection) to bottom (ground):
+  //   s1: tubing head spool — smallest  (annulus A side outlet)
+  //   s2: annulus B spool   — slightly bigger
+  //   s3: casing head       — full width
+  const s1h = h * 0.55, s2h = h * 0.25, s3h = h * 0.20;
+  const w1 = w * 0.65, w2 = w * 0.80, w3 = w;
+  const y2 = s1h, y3 = s1h + s2h;
   const fill = `url(#${GID.metal})`, fillF = `url(#${GID.flange})`;
   const fbar = (y, bw) => svgSelf("rect", { x:-(bw/2+fl), y:y-fb/2, width:bw+fl*2, height:fb, fill:fillF, stroke:THEME.stroke, "stroke-width":1 });
   const bolts = (cy, bw, n) => {
@@ -73,16 +77,20 @@ function wellheadBody({ height=100, width=70 } = {}) {
     ).join("");
   };
   return [
-    // Casing head body (lower 58%)
-    svgSelf("rect", { x:-w1/2, y:0, width:w1, height:s1h, fill, stroke:THEME.stroke, "stroke-width":1 }),
-    // Tubing head spool body (upper 42%)
-    svgSelf("rect", { x:-w2/2, y:s1h, width:w2, height:s2h, fill, stroke:THEME.stroke, "stroke-width":1 }),
-    // Bottom flange
-    fbar(fb/2, w1), bolts(fb/2, w1, 8),
-    // Mid flange — junction
-    fbar(s1h, w1), bolts(s1h, w1, 8),
-    // Top flange — to xmas tree
-    fbar(h - fb/2, w2), bolts(h - fb/2, w2, 6),
+    // Tubing head spool (top, smallest — annulus A)
+    svgSelf("rect", { x:-w1/2, y:0,  width:w1, height:s1h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Annulus B spool (middle)
+    svgSelf("rect", { x:-w2/2, y:y2, width:w2, height:s2h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Casing head (bottom, full width)
+    svgSelf("rect", { x:-w3/2, y:y3, width:w3, height:s3h, fill, stroke:THEME.stroke, "stroke-width":1 }),
+    // Top flange — connection to xmas tree
+    fbar(fb/2, w1), bolts(fb/2, w1, 6),
+    // Junction flange s1 → s2
+    fbar(y2, w2), bolts(y2, w2, 7),
+    // Junction flange s2 → s3
+    fbar(y3, w3), bolts(y3, w3, 8),
+    // Bottom flange — into ground
+    fbar(h - fb/2, w3), bolts(h - fb/2, w3, 8),
     // Through-bore (tubing)
     svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
   ].join("");
