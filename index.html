@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Well Surface Diagram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin:0; font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#fff; color:#111; }
+    header { padding:16px 20px; border-bottom:1px solid #e5e7eb; }
+    main { padding:16px 20px; display:flex; gap:20px; align-items:flex-start; }
+    .svgWrap { overflow:auto; border:1px solid #e5e7eb; border-radius:8px; background:#fafafa; min-width:920px; min-height:540px; }
+    .side { flex:1; min-width:320px; }
+    .btn { display:inline-block; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; cursor:pointer; background:#fff; }
+    .hint { color:#6b7280; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0 0 6px 0;">Well Surface Diagram</h1>
+    <div class="hint">Render dinamico da <code>well_data.json</code> (wellhead, xmas tree e valvole).</div>
+  </header>
+
+  <main>
+    <div class="svgWrap" id="app"></div>
+    <div class="side">
+      <h3>Azioni</h3>
+      <button class="btn" id="downloadBtn">Scarica SVG</button>
+      <p class="hint" style="margin-top:10px">
+        Etichette generate da <code>valvedata.dimension</code> e <code>valvedata.working_pressure</code>; posizionamento guidato da
+        <code>xmastreevalvetype.code</code> e <code>wellheadvalveside.code</code>. 
+      </p>
+    </div>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
