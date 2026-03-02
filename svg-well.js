@@ -190,7 +190,7 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const W = 900 * scale, H = 520 * scale;
   const originX = 260 * scale;
   const baselineY = 40 * scale;
-  const pipeBore = 11 * scale, whH = 120 * scale, xtH = 180 * scale;
+  const pipeBore = 11 * scale, whH = 120 * scale, xtH = 240 * scale;
   const valveW = 72 * scale, valveH = 28 * scale;
   let content = "";
 
@@ -200,10 +200,10 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const xtY = baselineY + 40*scale;
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: 66*scale }));
 
-  // Master / swab valves along the vertical bore (UPDATED PERCENTAGES)
-  const swabY = xtY + xtH * 0.05;   // 5%
-  const msvYH = xtY + xtH * 0.22;   // 22% upper master
-  const msvYB = xtY + xtH * 0.43;   // 43% lower master
+  // Valve positions along the vertical bore
+  const swabY = xtY + xtH * 0.18;   // 18% — clear of top cap flange
+  const msvYH = xtY + xtH * 0.35;   // 35% upper master
+  const msvYB = xtY + xtH * 0.75;   // 75% lower master — below wing valves
 
   if (msvB) {
     content += group(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH }));
