@@ -199,7 +199,7 @@ function gateValveScssv({ height=26, color=THEME.dhsv } = {}) {
 // ---------- Semantic helpers ----------
 const isHydraulic = (code) => code === "uppermaster" || code === "hydrowing";
 const isKill = (code) => code === "kill";
-const isAnnulus = (code) => code === "annulusa" || code === "annulusb";
+const isAnnulus = (code) => code === "annulusa" || code === "annulusb" || code === "annulusc";
 
 function valveGlyph(typeCode, opts={}) {
   if (isHydraulic(typeCode)) return gateValveHydraulic(opts);
@@ -264,20 +264,37 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const swab = xtValves.find(v => v?.xmastreevalvetype?.code === "swab");
   const kill = xtValves.find(v => v?.xmastreevalvetype?.code === "kill");
   const iwing= xtValves.find(v => v?.xmastreevalvetype?.code === "innerwing");
+  const owng = xtValves.find(v => v?.xmastreevalvetype?.code === "outerwing");
   const hwing= xtValves.find(v => v?.xmastreevalvetype?.code === "hydrowing");
-  const annA = whValves.find(v => v?.wellheadvalvetype?.code === "annulusa");
-  const annB = whValves.find(v => v?.wellheadvalvetype?.code === "annulusb");
+  // Annulus: at most one valve per side (left/right) per spool level
+  const bySide = (code) => {
+    const seen = new Set();
+    return whValves.filter(v => {
+      if (v?.wellheadvalvetype?.code !== code) return false;
+      const s = v?.wellheadvalveside?.code ?? "right";
+      return seen.has(s) ? false : (seen.add(s), true);
+    });
+  };
+  const annAValves = bySide("annulusa");
+  const annBValves = bySide("annulusb");
+  const annCValves = bySide("annulusc");
   const dhsv = data?.tubings?.[0]?.safetyvalve;
 
   // Canvas & layout
   const scale = O.scale;
   const W = 900 * scale, H = 660 * scale;
   const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
-  // Drawing is asymmetric: right side (148+36=184) wider than left (72+36=108).
-  // Shift originX left by half the difference so the whole drawing is centred.
-  const originX = W / 2 - 38 * scale;
-  const baselineY = H / 2 - xtH;    // xmas-tree/wellhead junction at canvas centre
   const valveW = 72 * scale, valveH = Math.round(28 * 1.4) * scale;
+  // Dynamic originX: centre the drawing accounting for variable right-side wing valve count
+  const rightWingValves = [iwing, owng, hwing].filter(Boolean);
+  const rwStep     = 76 * scale;   // step between consecutive right-side valves
+  const rwStartOff = 72 * scale;   // X offset from originX to first right wing valve
+  const rightWingExtent = rightWingValves.length > 0
+    ? rwStartOff + (rightWingValves.length - 1) * rwStep + valveW / 2
+    : valveW / 2;
+  const leftWingExtent = kill ? 72 * scale + valveW / 2 : valveW / 2;
+  const originX = W / 2 - (rightWingExtent - leftWingExtent) / 2;
+  const baselineY = H / 2 - xtH;    // xmas-tree/wellhead junction at canvas centre
   let content = "";
 
   // ── X-mas tree (top) ──────────────────────────────────────────────────────
@@ -306,15 +323,15 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     content += valveClickGroup(killX, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(kill));
   }
 
-  // WGV(I) inner and WGV(H) hydraulic on the same right outlet, in series at wingCenterY
-  const iwingX = originX + 72*scale;    // inner wing valve centre X (closer to tree)
-  const hwingX = originX + 148*scale;   // hydraulic wing valve centre X (further out)
-  const rightPipeEnd = (hwing ? hwingX : iwing ? iwingX : originX) + valveW/2;
-  if (iwing || hwing) {
+  // Right wing valves: inner → outer → hydraulic, in series along the right outlet
+  if (rightWingValves.length > 0) {
+    const rightPipeEnd = originX + rwStartOff + (rightWingValves.length - 1) * rwStep + valveW / 2;
     content += group(originX, wingCenterY, pipeHorizontal({ width: rightPipeEnd - originX, bore: pipeBore }));
+    rightWingValves.forEach((v, i) => {
+      const vx = originX + rwStartOff + i * rwStep;
+      content += valveClickGroup(vx, wingCenterY, valveGlyph(v.xmastreevalvetype.code, { width: valveW, height: valveH }), valveInfo(v));
+    });
   }
-  if (iwing) content += valveClickGroup(iwingX, wingCenterY, valveGlyph(iwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(iwing));
-  if (hwing) content += valveClickGroup(hwingX, wingCenterY, valveGlyph(hwing?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(hwing));
 
   // ── Wellhead (bottom) ─────────────────────────────────────────────────────
   const whY = xtY + xtH;
@@ -323,20 +340,30 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   // Annulus valves — outlet centred at the mid-point of its spool
   // s1 (tubing head, annulus A): 0 .. whH/3  → centre whH/6
   // s2 (annulus B):              whH/3..2/3  → centre whH/2
+  // s3 (casing head, annulus C): 2/3..1      → centre whH*5/6
   const annYA = whY + whH / 6;
   const annYB = whY + whH / 2;
+  const annYC = whY + whH * 5 / 6;
   // Each spool is wider than the one above it; offset each valve outward by half
   // the width difference so it sits at a consistent distance from its spool face.
   const whBodyW   = 80 * scale;
   const spoolW1   = whBodyW * 0.65;   // s1 (annulus A) width — mirrors wellheadBody
   const spoolW2   = whBodyW * 0.80;   // s2 (annulus B) width
-  const annBShift = (spoolW2 - spoolW1) / 2;   // extra outward offset for annulus B
-  [[annA, annYA, 0], [annB, annYB, annBShift]].filter(([v]) => v).forEach(([v, y, shift]) => {
-    const side = v?.wellheadvalveside?.code ?? "right";
-    const sign = side === "left" ? -1 : 1;
-    const x = originX + sign * (50 * scale + shift);
-    content += group(originX, y, pipeHorizontal({ width: sign * (80 * scale + shift), bore: pipeBore }));
-    content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
+  const spoolW3   = whBodyW * 1.00;   // s3 (casing head, annulus C) width
+  const annBShift = (spoolW2 - spoolW1) / 2;
+  const annCShift = (spoolW3 - spoolW1) / 2;
+  [
+    [annAValves, annYA, 0],
+    [annBValves, annYB, annBShift],
+    [annCValves, annYC, annCShift],
+  ].forEach(([valves, y, shift]) => {
+    valves.forEach(v => {
+      const side = v?.wellheadvalveside?.code ?? "right";
+      const sign = side === "left" ? -1 : 1;
+      const x = originX + sign * (50 * scale + shift);
+      content += group(originX, y, pipeHorizontal({ width: sign * (80 * scale + shift), bore: pipeBore }));
+      content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
+    });
   });
 
   // ── Downhole Safety Valve (SCSSV / DHSV) ──────────────────────────────────
