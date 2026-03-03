@@ -239,8 +239,8 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // Valve positions along the vertical bore
   const swabY = xtY + xtH * 0.18;   // 18% — clear of top cap flange
-  const msvYH = xtY + xtH * 0.35;   // 35% upper master
-  const msvYB = xtY + xtH * 0.75;   // 75% lower master — below wing valves
+  const msvYH = xtY + xtH * 0.68;   // 68% upper master — below wing valves
+  const msvYB = xtY + xtH * 0.83;   // 83% lower master — below upper master
 
   if (msvB) content += valveClickGroup(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvB));
   if (msvH) content += valveClickGroup(originX, msvYH, valveGlyph(msvH?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvH));
