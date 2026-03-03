@@ -238,7 +238,8 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: xtBodyW }));
 
   // Valve positions along the vertical bore
-  const swabY = xtY + xtH * 0.18;   // 18% — clear of top cap flange
+  const xtCapH = Math.round(xtH * 0.08);            // mirrors xmasTreeBody capH
+  const swabY  = xtY + (xtCapH + xtH * 0.41) / 2;  // midpoint between top flange and cross
   const msvYH = xtY + xtH * 0.64;   // 64% upper master — below wing valves (~23% step)
   const msvYB = xtY + xtH * 0.87;   // 87% lower master — below upper master (~23% step)
 
@@ -269,12 +270,14 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const whY = xtY + xtH;
   content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16 }));
 
-  // Annulus valves on the wellhead sides
-  const annBaseY = whY + 40*scale;
-  [annA, annB].filter(Boolean).forEach((v, idx) => {
+  // Annulus valves — outlet centred at the mid-point of its spool
+  // s1 (tubing head, annulus A): 0 .. whH/3  → centre whH/6
+  // s2 (annulus B):              whH/3..2/3  → centre whH/2
+  const annYA = whY + whH / 6;
+  const annYB = whY + whH / 2;
+  [[annA, annYA], [annB, annYB]].filter(([v]) => v).forEach(([v, y]) => {
     const side = v?.wellheadvalveside?.code ?? "right";
     const sign = side === "left" ? -1 : 1;
-    const y = annBaseY + idx * (valveH + 14*scale);
     const x = originX + sign * (50*scale);
     content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: pipeBore }));
     content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
