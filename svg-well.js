@@ -43,7 +43,25 @@ const label = (text, x, y, opts = {}) => svgEl("text", {
 
 // ---------- Primitives ----------
 function pipeVertical({ height=80, bore=12, color=THEME.pipe } = {}) {
-  return svgSelf("rect", { x: -bore/2, y: 0, width: bore, height, fill: color, rx: bore/2, ry: bore/2 });
+  return svgSelf("rect", { x: -bore/2, y: 0, width: bore, height, fill: color });
+}
+
+// Break symbol placed on a vertical pipe to indicate a schematic (not-to-scale) depth gap.
+// Draws two parallel horizontal S-curves centred at (0,0).
+// gap = total vertical space reserved; each curve sits at ±gap/2, flush with the pipe ends.
+function pipeBreakSymbol({ bore = 12, gap = 26 } = {}) {
+  const w   = bore * 1.4;   // half-span — extends slightly beyond the pipe walls
+  const hg  = gap / 2;      // Y of each curve = exact pipe-end height
+  const amp = hg * 0.38;    // how far the S dips above/below the curve baseline
+
+  // Both curves share the same S-direction (parallel): left dips UP, right returns DOWN.
+  const d1 = `M ${-w},${-hg} C ${-w/3},${-hg - amp} ${w/3},${-hg + amp} ${w},${-hg}`;
+  const d2 = `M ${-w},${hg}  C ${-w/3},${hg  - amp} ${w/3},${hg  + amp} ${w},${hg}`;
+
+  return [
+    svgEl("path", { d: d1, stroke: THEME.pipe, "stroke-width": 1.5, fill: "none" }),
+    svgEl("path", { d: d2, stroke: THEME.pipe, "stroke-width": 1.5, fill: "none" }),
+  ].join("");
 }
 
 function pipeHorizontal({ width=120, bore=12, color=THEME.pipe } = {}) {
@@ -59,9 +77,9 @@ function flange({ outer=26, inner=12, thickness=10, body=THEME.flange }) {
   ].join("");
 }
 
-function wellheadBody({ height=100, width=70, topFlangeOuter } = {}) {
+function wellheadBody({ height=100, width=70, topFlangeOuter, bore: borePx } = {}) {
   const h = height, w = width;
-  const fl = 10, fb = 9, bore = Math.round(w * 0.175);
+  const fl = 10, fb = 9, bore = borePx ?? Math.round(w * 0.175);
   // Three stacked sections from top (xmas tree connection) to bottom (ground):
   //   s1: tubing head spool — smallest  (annulus A side outlet)
   //   s2: annulus B spool   — slightly bigger
@@ -99,8 +117,8 @@ function wellheadBody({ height=100, width=70, topFlangeOuter } = {}) {
     fbar(y3, w3), bolts(y3, w3, 8),
     // Bottom flange — into ground
     fbar(h - fb/2, w3), bolts(h - fb/2, w3, 8),
-    // Through-bore (tubing)
-    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
+    // Through-bore (tubing) — square ends so it connects flush with adjacent segments
+    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827" }),
   ].join("");
 }
 
@@ -129,8 +147,8 @@ function xmasTreeBody({ height=160, width=60 } = {}) {
     fbar(capH, w), bolts(capH, w, 6),
     fbar(crossY, crossW), bolts(crossY, crossW, 10),
     fbar(h - fb/2, w), bolts(h - fb/2, w, 8),
-    // Vertical through-bore
-    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827", rx:bore/2 }),
+    // Vertical through-bore — square ends so it connects flush with wellhead bore
+    svgSelf("rect", { x:-bore/2, y:0, width:bore, height:h, fill:"#111827" }),
     // Horizontal bore (wing outlets)
     svgSelf("rect", { x:-crossW/2, y:crossY-bore/2, width:crossW, height:bore, fill:"#111827", rx:bore/2 }),
   ].join("");
@@ -170,7 +188,7 @@ function gateValveHydraulic({ height=26, color=THEME.hydraulicValve } = {}) {
 function gateValveScssv({ height=26, color=THEME.dhsv } = {}) {
   const r = height / 2;
   const pts = `0,${-r} ${r},0 0,${r} ${-r},0`;
-  const d = r * 0.55;
+  const d = r * 0.5;   // r/2 keeps X endpoints on the diamond edge midpoints
   return [
     svgSelf("polygon", { points: pts, fill: color, stroke: THEME.stroke, "stroke-width": 1.5 }),
     svgSelf("line", { x1: -d, y1: -d, x2: d, y2: d, stroke: THEME.stroke, "stroke-width": 1.5 }),
@@ -253,10 +271,12 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // Canvas & layout
   const scale = O.scale;
-  const W = 560 * scale, H = 660 * scale;
-  const originX = 242 * scale;
-  const baselineY = 40 * scale;
+  const W = 900 * scale, H = 660 * scale;
   const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
+  // Drawing is asymmetric: right side (148+36=184) wider than left (72+36=108).
+  // Shift originX left by half the difference so the whole drawing is centred.
+  const originX = W / 2 - 38 * scale;
+  const baselineY = H / 2 - xtH;    // xmas-tree/wellhead junction at canvas centre
   const valveW = 72 * scale, valveH = Math.round(28 * 1.4) * scale;
   let content = "";
 
@@ -298,28 +318,39 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // ── Wellhead (bottom) ─────────────────────────────────────────────────────
   const whY = xtY + xtH;
-  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16 }));
+  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16, bore: pipeBore }));
 
   // Annulus valves — outlet centred at the mid-point of its spool
   // s1 (tubing head, annulus A): 0 .. whH/3  → centre whH/6
   // s2 (annulus B):              whH/3..2/3  → centre whH/2
   const annYA = whY + whH / 6;
   const annYB = whY + whH / 2;
-  [[annA, annYA], [annB, annYB]].filter(([v]) => v).forEach(([v, y]) => {
+  // Each spool is wider than the one above it; offset each valve outward by half
+  // the width difference so it sits at a consistent distance from its spool face.
+  const whBodyW   = 80 * scale;
+  const spoolW1   = whBodyW * 0.65;   // s1 (annulus A) width — mirrors wellheadBody
+  const spoolW2   = whBodyW * 0.80;   // s2 (annulus B) width
+  const annBShift = (spoolW2 - spoolW1) / 2;   // extra outward offset for annulus B
+  [[annA, annYA, 0], [annB, annYB, annBShift]].filter(([v]) => v).forEach(([v, y, shift]) => {
     const side = v?.wellheadvalveside?.code ?? "right";
     const sign = side === "left" ? -1 : 1;
-    const x = originX + sign * (50*scale);
-    content += group(originX, y, pipeHorizontal({ width: sign * (80*scale), bore: pipeBore }));
+    const x = originX + sign * (50 * scale + shift);
+    content += group(originX, y, pipeHorizontal({ width: sign * (80 * scale + shift), bore: pipeBore }));
     content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
   });
 
   // ── Downhole Safety Valve (SCSSV / DHSV) ──────────────────────────────────
-  // Pipe extends downhole from the wellhead bottom flange; valve is not to scale
-  const dhsvPipeLen = 100 * scale;
-  const dhsvY = whY + whH + dhsvPipeLen * 0.65;
-  content += group(originX, whY + whH, pipeVertical({ height: dhsvPipeLen, bore: pipeBore }));
+  // Break symbol indicates the depth gap is schematic, not to scale.
+  const pipeAbove  = 20 * scale;   // pipe from WH bottom to break
+  const breakGap   = 8 * scale;    // visual gap (covers the S-curves + clearance)
+  const pipeBelow  = 90 * scale;   // pipe from break down to DHSV
+  const breakBaseY = whY + whH + pipeAbove;
+  const dhsvY      = breakBaseY + breakGap + pipeBelow / 2;
+  content += group(originX, whY + whH,       pipeVertical({ height: pipeAbove, bore: pipeBore }));
+  content += group(originX, breakBaseY + breakGap / 2, pipeBreakSymbol({ bore: pipeBore, gap: breakGap }));
+  content += group(originX, breakBaseY + breakGap, pipeVertical({ height: pipeBelow, bore: pipeBore }));
   if (dhsv) {
-    content += valveClickGroup(originX, dhsvY, gateValveScssv({ height: valveH }), dhsvInfo(dhsv));
+    content += valveClickGroup(originX, dhsvY, gateValveScssv({ height: valveH * 1.1 }), dhsvInfo(dhsv));
   }
 
   // Header
