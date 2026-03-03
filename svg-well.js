@@ -238,17 +238,19 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: xtBodyW }));
 
   // Valve positions along the vertical bore
-  const xtCapH = Math.round(xtH * 0.08);            // mirrors xmasTreeBody capH
-  const swabY  = xtY + (xtCapH + xtH * 0.41) / 2;  // midpoint between top flange and cross
-  const msvYH = xtY + xtH * 0.64;   // 64% upper master — below wing valves (~23% step)
-  const msvYB = xtY + xtH * 0.87;   // 87% lower master — below upper master (~23% step)
+  const xtCapH   = Math.round(xtH * 0.08);             // mirrors xmasTreeBody capH
+  const xtCrossY = xtH * 0.41;                          // mirrors xmasTreeBody crossY
+  const swabY    = xtY + (xtCapH + xtCrossY) / 2;      // midpoint: top flange → cross
+  const msvStep  = (xtH - xtCrossY) / 3;               // even spacing in lower section
+  const msvYH    = xtY + xtCrossY + msvStep;            // 1st third below cross
+  const msvYB    = xtY + xtCrossY + 2 * msvStep;        // 2nd third below cross
 
   if (msvB) content += valveClickGroup(originX, msvYB, valveGlyph(msvB?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvB));
   if (msvH) content += valveClickGroup(originX, msvYH, valveGlyph(msvH?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(msvH));
   if (swab) content += valveClickGroup(originX, swabY,  valveGlyph(swab?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(swab));
 
   // Wing valves: kill (left), inner + hydro wing (right)
-  const wingCenterY = xtY + xtH * 0.41; // align with cross bar (~23% step from swab)
+  const wingCenterY = xtY + xtCrossY;   // aligned with cross bar
   const killX = originX - 72*scale;   // mirror of iwingX
   if (kill) {
     const y = wingCenterY;
