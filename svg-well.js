@@ -5,12 +5,13 @@
 // ---------- Theme & Defaults ----------
 const THEME = {
   pipe: "#111827",
-  body: "#9CA3AF",
-  flange: "#6B7280",
+  body: "#2D7A2D",
+  flange: "#1B4D1B",
   manualValve: "#2563EB",
   hydraulicValve: "#059669",
   killValve: "#DC2626",
   annulusValve: "#7C3AED",
+  dhsv: "#D97706",
   stroke: "#111827",
   text: "#111827",
   bg: "transparent",
@@ -165,6 +166,18 @@ function gateValveHydraulic({ height=26, color=THEME.hydraulicValve } = {}) {
   ].join("");
 }
 
+// Diamond-shaped SCSSV / DHSV glyph (downhole safety valve)
+function gateValveScssv({ height=26, color=THEME.dhsv } = {}) {
+  const r = height / 2;
+  const pts = `0,${-r} ${r},0 0,${r} ${-r},0`;
+  const d = r * 0.55;
+  return [
+    svgSelf("polygon", { points: pts, fill: color, stroke: THEME.stroke, "stroke-width": 1.5 }),
+    svgSelf("line", { x1: -d, y1: -d, x2: d, y2: d, stroke: THEME.stroke, "stroke-width": 1.5 }),
+    svgSelf("line", { x1: d, y1: -d, x2: -d, y2: d, stroke: THEME.stroke, "stroke-width": 1.5 }),
+  ].join("");
+}
+
 // ---------- Semantic helpers ----------
 const isHydraulic = (code) => code === "uppermaster" || code === "hydrowing";
 const isKill = (code) => code === "kill";
@@ -194,6 +207,22 @@ function valveInfo(valve) {
   };
 }
 
+// Build the data payload for a downhole safety valve
+function dhsvInfo(sv) {
+  return {
+    name:                sv?.name ?? "DHSV",
+    acronym:             sv?.acronym ?? "DHSV",
+    type:                sv?.safetyvalvetype?.name ?? "",
+    description:         sv?.manufacturer_model ?? "",
+    installation_year:   sv?.installation_year ?? null,
+    dimension:           sv?.max_od ? `OD ${String(sv.max_od).replace(/"/g, "″")}` : null,
+    working_pressure:    sv?.working_pressure ?? null,
+    allowable_leak_rate: sv?.allowable_leak_rate ?? null,
+    manufacturer:        null,
+    depth:               sv?.depth ? `${sv.depth} ft` : null,
+  };
+}
+
 // Wrap a glyph in a clickable <g> carrying valve data as a JSON attribute
 function valveClickGroup(x, y, glyphSvg, info) {
   return svgEl("g", {
@@ -220,20 +249,19 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const hwing= xtValves.find(v => v?.xmastreevalvetype?.code === "hydrowing");
   const annA = whValves.find(v => v?.wellheadvalvetype?.code === "annulusa");
   const annB = whValves.find(v => v?.wellheadvalvetype?.code === "annulusb");
+  const dhsv = data?.tubings?.[0]?.safetyvalve;
 
   // Canvas & layout
   const scale = O.scale;
-  const W = 900 * scale, H = 580 * scale;
-  const originX = 260 * scale;
+  const W = 560 * scale, H = 660 * scale;
+  const originX = 242 * scale;
   const baselineY = 40 * scale;
   const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
-  const valveW = 72 * scale, valveH = 28 * scale;
+  const valveW = 72 * scale, valveH = Math.round(28 * 1.4) * scale;
   let content = "";
 
   // ── X-mas tree (top) ──────────────────────────────────────────────────────
-  // Short flowline stub above the xmas tree
-  content += group(originX, baselineY, pipeVertical({ height: 40*scale, bore: pipeBore }));
-  const xtY = baselineY + 40*scale;
+  const xtY = baselineY;
   const xtBodyW = 66*scale;  // xmas tree body width (fl=8 inside, so bottom flange outer = xtBodyW + 16)
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: xtBodyW }));
 
@@ -285,8 +313,14 @@ export function renderWellSurfaceSvg(data, opts = {}) {
     content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
   });
 
-  // Short casing stub below wellhead (into ground)
-  content += group(originX, whY + whH, pipeVertical({ height: 40*scale, bore: pipeBore }));
+  // ── Downhole Safety Valve (SCSSV / DHSV) ──────────────────────────────────
+  // Pipe extends downhole from the wellhead bottom flange; valve is not to scale
+  const dhsvPipeLen = 100 * scale;
+  const dhsvY = whY + whH + dhsvPipeLen * 0.65;
+  content += group(originX, whY + whH, pipeVertical({ height: dhsvPipeLen, bore: pipeBore }));
+  if (dhsv) {
+    content += valveClickGroup(originX, dhsvY, gateValveScssv({ height: valveH }), dhsvInfo(dhsv));
+  }
 
   // Header
   const title = `${data?.name ?? "Well"} — ${xt?.type ?? "X-mas Tree"}`;
@@ -299,18 +333,18 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   const gradDefs = `<defs>
   <linearGradient id="${GID.metal}" x1="0" x2="1" y1="0" y2="0">
-    <stop offset="0%"  stop-color="#374151"/>
-    <stop offset="25%" stop-color="#9CA3AF"/>
-    <stop offset="50%" stop-color="#E5E7EB"/>
-    <stop offset="75%" stop-color="#9CA3AF"/>
-    <stop offset="100%" stop-color="#374151"/>
+    <stop offset="0%"  stop-color="#1B4D1B"/>
+    <stop offset="25%" stop-color="#2D7A2D"/>
+    <stop offset="50%" stop-color="#7BC47B"/>
+    <stop offset="75%" stop-color="#2D7A2D"/>
+    <stop offset="100%" stop-color="#1B4D1B"/>
   </linearGradient>
   <linearGradient id="${GID.flange}" x1="0" x2="1" y1="0" y2="0">
-    <stop offset="0%"  stop-color="#1F2937"/>
-    <stop offset="30%" stop-color="#6B7280"/>
-    <stop offset="50%" stop-color="#D1D5DB"/>
-    <stop offset="70%" stop-color="#6B7280"/>
-    <stop offset="100%" stop-color="#1F2937"/>
+    <stop offset="0%"  stop-color="#163816"/>
+    <stop offset="30%" stop-color="#245C24"/>
+    <stop offset="50%" stop-color="#4A9A4A"/>
+    <stop offset="70%" stop-color="#245C24"/>
+    <stop offset="100%" stop-color="#163816"/>
   </linearGradient>
 </defs>`;
 
@@ -355,6 +389,7 @@ export function mountValveBalloon(container) {
       ["Working Pressure",     info.working_pressure    ? `${info.working_pressure} psi`    : null],
       ["Allowable Leak Rate",  info.allowable_leak_rate ? `${info.allowable_leak_rate} cc/min` : null],
       ["Manufacturer",         info.manufacturer],
+      ["Depth",                info.depth],
     ].filter(([, v]) => v != null && v !== "");
 
     b.innerHTML = `
