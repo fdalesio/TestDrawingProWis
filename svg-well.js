@@ -77,6 +77,32 @@ function flange({ outer=26, inner=12, thickness=10, body=THEME.flange }) {
   ].join("");
 }
 
+// Small flanges on both sides of a horizontal outlet valve, centered at (0,0).
+// r: valve circle radius (already scaled). bore: pipe bore height.
+// Stubs and flange bars use the pipe color so they blend with the connecting pipe.
+function outletFlanges({ r, bore = 11 }) {
+  const gap = Math.max(8, Math.round(r * 0.56)); // pipe stub length between valve body and flange
+  const fl  = Math.max(5, Math.round(r * 0.33)); // flange bar width (horizontal extent)
+  const fh  = Math.round(r * 1.5);               // flange bar height (vertical extent)
+  const bm  = Math.round(fh / 2 - 3.5);          // bolt Y offset from centre
+
+  const stub = (x, w) => svgSelf("rect", {
+    x, y: -bore / 2, width: w, height: bore, fill: THEME.pipe,
+  });
+  const bar  = (x) => svgSelf("rect", {
+    x, y: -fh / 2, width: fl, height: fh,
+    fill: THEME.pipe, stroke: THEME.stroke, "stroke-width": 1,
+  });
+  const bolt = (cx, cy) => svgSelf("circle", {
+    cx, cy, r: 2.2, fill: "#111827", stroke: "#374151", "stroke-width": 0.5,
+  });
+
+  return [
+    stub(-(r + gap), gap),  bar(-(r + gap + fl)),  bolt(-(r + gap + fl / 2), -bm), bolt(-(r + gap + fl / 2), +bm),
+    stub(r, gap),           bar(r + gap),           bolt(r + gap + fl / 2,    -bm), bolt(r + gap + fl / 2,    +bm),
+  ].join("");
+}
+
 function wellheadBody({ height=100, width=70, topFlangeOuter, bore: borePx } = {}) {
   const h = height, w = width;
   const fl = 10, fb = 9, bore = borePx ?? Math.round(w * 0.175);
@@ -201,6 +227,13 @@ const isHydraulic = (code) => code === "uppermaster" || code === "hydrowing";
 const isKill = (code) => code === "kill";
 const isAnnulus = (code) => code === "annulusa" || code === "annulusb" || code === "annulusc";
 
+function valveColor(typeCode) {
+  if (isHydraulic(typeCode)) return THEME.hydraulicValve;
+  if (isKill(typeCode))      return THEME.killValve;
+  if (isAnnulus(typeCode))   return THEME.annulusValve;
+  return THEME.manualValve;
+}
+
 function valveGlyph(typeCode, opts={}) {
   if (isHydraulic(typeCode)) return gateValveHydraulic(opts);
   if (isKill(typeCode)) return gateValveManual({ ...opts, color: THEME.killValve });
@@ -285,21 +318,26 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const W = 900 * scale, H = 660 * scale;
   const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
   const valveW = 72 * scale, valveH = Math.round(28 * 1.4) * scale;
+  const xtBodyW = 66 * scale; // xmas tree body width (fl=8 inside, so bottom flange outer = xtBodyW + 16)
+  // Valve flange geometry (mirrors outletFlanges internals, must stay in sync)
+  const vr   = valveH / 2;
+  const vgap = Math.max(8, Math.round(vr * 0.56));
+  const vfl  = Math.max(5, Math.round(vr * 0.33));
   // Dynamic originX: centre the drawing accounting for variable right-side wing valve count
   const rightWingValves = [iwing, owng, hwing].filter(Boolean);
-  const rwStep     = 76 * scale;   // step between consecutive right-side valves
-  const rwStartOff = 72 * scale;   // X offset from originX to first right wing valve
+  const rwStep       = 2 * (vr + vgap + vfl); // adjacent flanges touch on the wing pipe
+  const xtCrossHalfW = xtBodyW * 1.85 / 2;    // half-width of XT cross bar (mirrors xmasTreeBody)
+  const rwStartOff   = xtCrossHalfW + vr + vgap + vfl + 2 * scale; // first wing valve; inner flange clears cross bar
   const rightWingExtent = rightWingValves.length > 0
-    ? rwStartOff + (rightWingValves.length - 1) * rwStep + valveW / 2
-    : valveW / 2;
-  const leftWingExtent = kill ? 72 * scale + valveW / 2 : valveW / 2;
+    ? rwStartOff + (rightWingValves.length - 1) * rwStep + vr + vgap + vfl
+    : vr + vgap + vfl;
+  const leftWingExtent = kill ? rwStartOff + vr + vgap + vfl : vr + vgap + vfl;
   const originX = W / 2 - (rightWingExtent - leftWingExtent) / 2;
   const baselineY = H / 2 - xtH;    // xmas-tree/wellhead junction at canvas centre
   let content = "";
 
   // ── X-mas tree (top) ──────────────────────────────────────────────────────
   const xtY = baselineY;
-  const xtBodyW = 66*scale;  // xmas tree body width (fl=8 inside, so bottom flange outer = xtBodyW + 16)
   content += group(originX, xtY, xmasTreeBody({ height: xtH, width: xtBodyW }));
 
   // Valve positions along the vertical bore
@@ -316,20 +354,24 @@ export function renderWellSurfaceSvg(data, opts = {}) {
 
   // Wing valves: kill (left), inner + hydro wing (right)
   const wingCenterY = xtY + xtCrossY;   // aligned with cross bar
-  const killX = originX - 72*scale;   // mirror of iwingX
+  const killX = originX - rwStartOff;
   if (kill) {
-    const y = wingCenterY;
-    content += group(originX, y, pipeHorizontal({ width: -(72*scale + valveW/2), bore: pipeBore }));
-    content += valveClickGroup(killX, y, valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(kill));
+    const y     = wingCenterY;
+    const r     = valveH / 2;
+    const color = valveColor(kill?.xmastreevalvetype?.code);
+    content += group(originX, y, pipeHorizontal({ width: -(rwStartOff + vr + vgap + vfl), bore: pipeBore }));
+    content += valveClickGroup(killX, y, outletFlanges({ r, color, bore: pipeBore }) + valveGlyph(kill?.xmastreevalvetype?.code, { width: valveW, height: valveH }), valveInfo(kill));
   }
 
   // Right wing valves: inner → outer → hydraulic, in series along the right outlet
   if (rightWingValves.length > 0) {
-    const rightPipeEnd = originX + rwStartOff + (rightWingValves.length - 1) * rwStep + valveW / 2;
+    const rightPipeEnd = originX + rwStartOff + (rightWingValves.length - 1) * rwStep + vr + vgap + vfl;
     content += group(originX, wingCenterY, pipeHorizontal({ width: rightPipeEnd - originX, bore: pipeBore }));
     rightWingValves.forEach((v, i) => {
-      const vx = originX + rwStartOff + i * rwStep;
-      content += valveClickGroup(vx, wingCenterY, valveGlyph(v.xmastreevalvetype.code, { width: valveW, height: valveH }), valveInfo(v));
+      const vx    = originX + rwStartOff + i * rwStep;
+      const r     = valveH / 2;
+      const color = valveColor(v.xmastreevalvetype.code);
+      content += valveClickGroup(vx, wingCenterY, outletFlanges({ r, color, bore: pipeBore }) + valveGlyph(v.xmastreevalvetype.code, { width: valveW, height: valveH }), valveInfo(v));
     });
   }
 
@@ -350,19 +392,23 @@ export function renderWellSurfaceSvg(data, opts = {}) {
   const spoolW1   = whBodyW * 0.65;   // s1 (annulus A) width — mirrors wellheadBody
   const spoolW2   = whBodyW * 0.80;   // s2 (annulus B) width
   const spoolW3   = whBodyW * 1.00;   // s3 (casing head, annulus C) width
-  const annBShift = (spoolW2 - spoolW1) / 2;
-  const annCShift = (spoolW3 - spoolW1) / 2;
   [
-    [annAValves, annYA, 0],
-    [annBValves, annYB, annBShift],
-    [annCValves, annYC, annCShift],
-  ].forEach(([valves, y, shift]) => {
+    [annAValves, annYA, spoolW1 / 2],
+    [annBValves, annYB, spoolW2 / 2],
+    [annCValves, annYC, spoolW3 / 2],
+  ].forEach(([valves, y, spoolHalf]) => {
     valves.forEach(v => {
-      const side = v?.wellheadvalveside?.code ?? "right";
-      const sign = side === "left" ? -1 : 1;
-      const x = originX + sign * (50 * scale + shift);
-      content += group(originX, y, pipeHorizontal({ width: sign * (80 * scale + shift), bore: pipeBore }));
-      content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
+      const side  = v?.wellheadvalveside?.code ?? "right";
+      const sign  = side === "left" ? -1 : 1;
+      const r     = valveH / 2;
+      const gap   = Math.max(8, Math.round(r * 0.56));
+      const fl    = Math.max(5, Math.round(r * 0.33));
+      const color = valveColor(v?.wellheadvalvetype?.code);
+      const vOff  = spoolHalf + r + gap + fl + 2 * scale; // valve centre; inner flange clears spool edge
+      const x     = originX + sign * vOff;
+      // extend pipe from bore centre out to the outer flange
+      content += group(originX, y, pipeHorizontal({ width: sign * (vOff + r + gap + fl), bore: pipeBore }));
+      content += valveClickGroup(x, y, outletFlanges({ r, color, bore: pipeBore }) + valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
     });
   });
 
