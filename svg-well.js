@@ -119,13 +119,15 @@ function flange({ outer = 26, inner = 12, thickness = 10, body = THEME.flange })
 
 
 // WELLHEAD BODY (single-bore)
-function wellheadBody({ height = 100, width = 70, topFlangeOuter, bore: borePx } = {}) {
+function wellheadBody({ height = 100, width = 70, topFlangeOuter, bore: borePx, spoolAWidth } = {}) {
   const h = height, w = width;
   const fl = 10, fb = 9;
   const bore = borePx ?? Math.round(w * 0.175);
 
   const s1h = h / 3, s2h = h / 3, s3h = h / 3;
-  const w1 = w * 0.65, w2 = w * 0.80, w3 = w;
+  const w1 = spoolAWidth ?? (w * 0.65);
+  const w2 = w1 + w * 0.15;
+  const w3 = w1 + w * 0.35;
   const y2 = s1h, y3 = s1h + s2h;
 
   const fill  = `url(#${GID.metal})`;
@@ -239,7 +241,7 @@ function xmasTreeBody({ height = 160, width = 60 } = {}) {
     svgSelf("rect", { x:-(w*0.55)/2, y:0, width:w*0.55, height:capH, fill:fillF, stroke:THEME.stroke, "stroke-width":1.5 }),
 
     // Flanges
-    fbar(capH, w) + bolts(capH, w, 6),
+    fbar(fb/2, w) + bolts(fb/2, w, 6),
     fbar(crossY, w) + bolts(crossY, w, 6),
     fbar(h - fb/2, w) + bolts(h - fb/2, w, 8),
 
@@ -490,10 +492,6 @@ function xmasTreeBodyDouble({
       "stroke-width": 1.5
     }),
 
-    // Flange cap SS
-    fbar(capH, capW),
-    bolts(capH, capW, 6),
-
     // Cap LS (right)
     svgSelf("rect", {
       x: cxLS - capW/2,
@@ -505,23 +503,12 @@ function xmasTreeBodyDouble({
       "stroke-width": 1.5
     }),
 
-    // Flange cap LS
-    fbar(capH, capW),
-    bolts(capH, capW, 6),
-
     /////////////////////////////////////////////////////////////
-    // FLANGE SS CROSS (superiore)
+    // FLANGE SUPERIORE (unica)
     /////////////////////////////////////////////////////////////
 
-    fbar(crossSS, w),
-    bolts(crossSS, w, 8),
-
-    /////////////////////////////////////////////////////////////
-    // FLANGE LS CROSS (inferiore)
-    /////////////////////////////////////////////////////////////
-
-    fbar(crossLS, w),
-    bolts(crossLS, w, 8),
+    fbar(fb/2, w),
+    bolts(fb/2, w, 10),
 
     /////////////////////////////////////////////////////////////
     // FLANGE INFERIORE (unica)
@@ -741,7 +728,8 @@ function renderDoubleCompletion(data, opts = {}) {
     height: whH,
     width:  whBodyW,
     topFlangeOuter: xtBodyW_d + 16, // corpo DC + flange 8px per lato
-    bore: 0
+    bore: 0,
+    spoolAWidth: xtBodyW_d
   }));
 
   // Annulus valves (A/B/C) come nel single — una per lato (se presente)
@@ -761,9 +749,9 @@ function renderDoubleCompletion(data, opts = {}) {
   const annYB = whY + whH / 2;
   const annYC = whY + whH * 5 / 6;
 
-  const spoolW1 = whBodyW * 0.65; // s1 (A)
-  const spoolW2 = whBodyW * 0.80; // s2 (B)
-  const spoolW3 = whBodyW * 1.00; // s3 (C)
+  const spoolW1 = xtBodyW_d;                    // s1 (A) — matches DC XT body width
+  const spoolW2 = xtBodyW_d + whBodyW * 0.15;   // s2 (B)
+  const spoolW3 = xtBodyW_d + whBodyW * 0.35;   // s3 (C)
 
   [
     [annAValves, annYA, spoolW1 / 2],
@@ -941,16 +929,16 @@ function renderSingleCompletion(data, opts = {}) {
 
   // ── Wellhead (bottom)
   const whY = xtY + xtH;
-  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16, bore: pipeBore }));
+  content += group(originX, whY, wellheadBody({ height: whH, width: 80*scale, topFlangeOuter: xtBodyW + 16, bore: pipeBore, spoolAWidth: xtBodyW }));
 
   // Annulus valves — outlet centred at the mid-point of its spool
   const annYA = whY + whH / 6;
   const annYB = whY + whH / 2;
   const annYC = whY + whH * 5 / 6;
   const whBodyW = 80 * scale;
-  const spoolW1 = whBodyW * 0.65; // s1 (A) width — mirrors wellheadBody
-  const spoolW2 = whBodyW * 0.80; // s2 (B)
-  const spoolW3 = whBodyW * 1.00; // s3 (C)
+  const spoolW1 = xtBodyW;                   // s1 (A) — matches XT body width
+  const spoolW2 = xtBodyW + whBodyW * 0.15;  // s2 (B)
+  const spoolW3 = xtBodyW + whBodyW * 0.35;  // s3 (C)
 
   [
     [annAValves, annYA, spoolW1 / 2],
