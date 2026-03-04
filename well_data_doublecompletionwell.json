@@ -1,0 +1,2563 @@
+{
+	"id": 465,
+	"function": 8,
+	"drilling_year": 2017,
+	"first_completion_year": 2017,
+	"last_workover_year": null,
+	"last_completion_year": null,
+	"rkb": null,
+	"rkb_ground_level": "24.05",
+	"total_depth": "12125",
+	"vertical_depth": "8023",
+	"max_deviation": null,
+	"actual_bottomhole_depth": null,
+	"perforated_zones": null,
+	"open_hole": "2622.80-3695.70",
+	"name": "Double Completion Well",
+	"sketch": "images/sketches/351.jpg",
+	"water_depth": null,
+	"casing_head_above_sea": 9,
+	"type": 1,
+	"rkb_sea_level": null,
+	"parent": null,
+	"new_existing": 1,
+	"reasons_for_wo_st": null,
+	"simulation_reason": null,
+	"state": null,
+	"trajectory": null,
+	"ground_level": null,
+	"is_short_string_left": true,
+	"field": 1,
+	"notes": null,
+	"wellfunction": {
+		"id": 8,
+		"name": "Oil production (S) / Gas injection (L)",
+		"code": "oilprod_gasinj"
+	},
+	"wellfield": {
+		"id": 1,
+		"name": "Field"
+	},
+	"welltype": null,
+	"wellstate": null,
+	"wellnewexisting": {
+		"id": 1,
+		"name": "New",
+		"code": "new"
+	},
+	"wellhead": {
+		"id": 380,
+		"well": 465,
+		"type": 1,
+		"manufacturer_model": "CHH \"IC-2\" 20\" 3/4 x 18\" 5/8 + CS \"IC-2\" 20\" 3/4 x 13\" 5/8 + TS \"IC-2-L\" 13\" 5/8 x 11\"",
+		"tubing_hanger": "CXS 11\"",
+		"working_pressure": 5000,
+		"annual_degradation_of_elastomers": "0.5",
+		"annual_degradation_of_tubing_hanger": "1",
+		"notes": null,
+		"valves": [
+			{
+				"id": 141,
+				"wellhead": 380,
+				"valve_type": 6,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 1,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 6,
+					"code": "annulusa",
+					"name": "Annulus A Valve",
+					"acronym": "ANN-A"
+				},
+				"wellheadvalveside": {
+					"id": 1,
+					"name": "Left",
+					"code": "left"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus A Valve",
+				"acronym": "ANN-A"
+			},
+			{
+				"id": 142,
+				"wellhead": 380,
+				"valve_type": 6,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 2,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 6,
+					"code": "annulusa",
+					"name": "Annulus A Valve",
+					"acronym": "ANN-A"
+				},
+				"wellheadvalveside": {
+					"id": 2,
+					"name": "Right",
+					"code": "right"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus A Valve",
+				"acronym": "ANN-A"
+			},
+			{
+				"id": 143,
+				"wellhead": 380,
+				"valve_type": 7,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 1,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 7,
+					"code": "annulusb",
+					"name": "Annulus B Valve",
+					"acronym": "ANN-B"
+				},
+				"wellheadvalveside": {
+					"id": 1,
+					"name": "Left",
+					"code": "left"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus B Valve",
+				"acronym": "ANN-B"
+			},
+			{
+				"id": 144,
+				"wellhead": 380,
+				"valve_type": 7,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 2,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 7,
+					"code": "annulusb",
+					"name": "Annulus B Valve",
+					"acronym": "ANN-B"
+				},
+				"wellheadvalveside": {
+					"id": 2,
+					"name": "Right",
+					"code": "right"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus B Valve",
+				"acronym": "ANN-B"
+			},
+			{
+				"id": 145,
+				"wellhead": 380,
+				"valve_type": 8,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 1,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 8,
+					"code": "annulusc",
+					"name": "Annulus C Valve ",
+					"acronym": "ANN-C"
+				},
+				"wellheadvalveside": {
+					"id": 1,
+					"name": "Left",
+					"code": "left"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus C Valve ",
+				"acronym": "ANN-C"
+			},
+			{
+				"id": 146,
+				"wellhead": 380,
+				"valve_type": 8,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": "",
+				"side": 2,
+				"valve_data": 1,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 8,
+					"code": "annulusc",
+					"name": "Annulus C Valve ",
+					"acronym": "ANN-C"
+				},
+				"wellheadvalveside": {
+					"id": 2,
+					"name": "Right",
+					"code": "right"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Annulus C Valve ",
+				"acronym": "ANN-C"
+			},
+			{
+				"id": 160,
+				"wellhead": 380,
+				"valve_type": 6,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": null,
+				"side": 2,
+				"valve_data": null,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 6,
+					"code": "annulusa",
+					"name": "Annulus A Valve",
+					"acronym": "ANN-A"
+				},
+				"wellheadvalveside": {
+					"id": 2,
+					"name": "Right",
+					"code": "right"
+				},
+				"name": "Annulus A Valve",
+				"acronym": "ANN-A"
+			},
+			{
+				"id": 156,
+				"wellhead": 380,
+				"valve_type": 6,
+				"actuated_valve": null,
+				"installation_year": null,
+				"description": null,
+				"side": 1,
+				"valve_data": null,
+				"is_tbg_tieback": null,
+				"notes": null,
+				"wellheadvalvetype": {
+					"id": 6,
+					"code": "annulusa",
+					"name": "Annulus A Valve",
+					"acronym": "ANN-A"
+				},
+				"wellheadvalveside": {
+					"id": 1,
+					"name": "Left",
+					"code": "left"
+				},
+				"name": "Annulus A Valve",
+				"acronym": "ANN-A"
+			}
+		],
+		"wellheadtype": {
+			"id": 1,
+			"name": "Flanged"
+		}
+	},
+	"xmastree": {
+		"id": 365,
+		"well": 465,
+		"type": "SSSBSV 11\" Style FH, 3-1/8\" Bore 5K WP, Type FLS",
+		"manufacturer_model": "",
+		"working_pressure": 5000,
+		"notes": null,
+		"valves": [
+			{
+				"id": 255,
+				"xmas_tree": 365,
+				"type": 8,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Hydraulic Wing Valve",
+				"tubing_type": 2,
+				"valve_data": 2,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 8,
+					"code": "hydrowing",
+					"name": "Hydraulic Wing Valve",
+					"acronym": "WGV (H)"
+				},
+				"tubingtype": {
+					"id": 2,
+					"code": "short",
+					"name": "Short String"
+				},
+				"valvedata": {
+					"id": 2,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 3000,
+					"allowable_leak_rate": "15",
+					"dimension": "2",
+					"name": "Cameron 2"
+				},
+				"name": "Hydraulic Wing Valve",
+				"acronym": "WGV (H)"
+			},
+			{
+				"id": 256,
+				"xmas_tree": 365,
+				"type": 8,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Hydraulic Wing Valve",
+				"tubing_type": 1,
+				"valve_data": 2,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 8,
+					"code": "hydrowing",
+					"name": "Hydraulic Wing Valve",
+					"acronym": "WGV (H)"
+				},
+				"tubingtype": {
+					"id": 1,
+					"code": "long",
+					"name": "Long String"
+				},
+				"valvedata": {
+					"id": 2,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 3000,
+					"allowable_leak_rate": "15",
+					"dimension": "2",
+					"name": "Cameron 2"
+				},
+				"name": "Hydraulic Wing Valve",
+				"acronym": "WGV (H)"
+			},
+			{
+				"id": 251,
+				"xmas_tree": 365,
+				"type": 6,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Inner Manual Wing Valve",
+				"tubing_type": 2,
+				"valve_data": 2,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 6,
+					"code": "innerwing",
+					"name": "Inner Wing Valve",
+					"acronym": "WGV (I)"
+				},
+				"tubingtype": {
+					"id": 2,
+					"code": "short",
+					"name": "Short String"
+				},
+				"valvedata": {
+					"id": 2,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 3000,
+					"allowable_leak_rate": "15",
+					"dimension": "2",
+					"name": "Cameron 2"
+				},
+				"name": "Inner Wing Valve",
+				"acronym": "WGV (I)"
+			},
+			{
+				"id": 249,
+				"xmas_tree": 365,
+				"type": 3,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Swab Valve",
+				"tubing_type": 2,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 3,
+					"code": "swab",
+					"name": "Swab Valve",
+					"acronym": "SWAB"
+				},
+				"tubingtype": {
+					"id": 2,
+					"code": "short",
+					"name": "Short String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Swab Valve",
+				"acronym": "SWAB"
+			},
+			{
+				"id": 248,
+				"xmas_tree": 365,
+				"type": 2,
+				"actuated_valve": null,
+				"installation_year": 2010,
+				"description": "Upper Master Valve",
+				"tubing_type": 1,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 2,
+					"code": "uppermaster",
+					"name": "Hydraulic Master Valve",
+					"acronym": "MSV (H)"
+				},
+				"tubingtype": {
+					"id": 1,
+					"code": "long",
+					"name": "Long String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Hydraulic Master Valve",
+				"acronym": "MSV (H)"
+			},
+			{
+				"id": 159,
+				"xmas_tree": 365,
+				"type": 2,
+				"actuated_valve": true,
+				"installation_year": 2010,
+				"description": "Upper Master Valve",
+				"tubing_type": 2,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 2,
+					"code": "uppermaster",
+					"name": "Hydraulic Master Valve",
+					"acronym": "MSV (H)"
+				},
+				"tubingtype": {
+					"id": 2,
+					"code": "short",
+					"name": "Short String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Hydraulic Master Valve",
+				"acronym": "MSV (H)"
+			},
+			{
+				"id": 247,
+				"xmas_tree": 365,
+				"type": 1,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Lower Master Valve",
+				"tubing_type": 1,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 1,
+					"code": "lowermaster",
+					"name": "Bottom Master Valve",
+					"acronym": "MSV (B)"
+				},
+				"tubingtype": {
+					"id": 1,
+					"code": "long",
+					"name": "Long String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Bottom Master Valve",
+				"acronym": "MSV (B)"
+			},
+			{
+				"id": 158,
+				"xmas_tree": 365,
+				"type": 1,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Lower Master Valve",
+				"tubing_type": 2,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 1,
+					"code": "lowermaster",
+					"name": "Bottom Master Valve",
+					"acronym": "MSV (B)"
+				},
+				"tubingtype": {
+					"id": 2,
+					"code": "short",
+					"name": "Short String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Bottom Master Valve",
+				"acronym": "MSV (B)"
+			},
+			{
+				"id": 250,
+				"xmas_tree": 365,
+				"type": 3,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Manual Swab Valve",
+				"tubing_type": 1,
+				"valve_data": 1,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 3,
+					"code": "swab",
+					"name": "Swab Valve",
+					"acronym": "SWAB"
+				},
+				"tubingtype": {
+					"id": 1,
+					"code": "long",
+					"name": "Long String"
+				},
+				"valvedata": {
+					"id": 1,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 5000,
+					"allowable_leak_rate": "15",
+					"dimension": "4",
+					"name": "Cameron 4"
+				},
+				"name": "Swab Valve",
+				"acronym": "SWAB"
+			},
+			{
+				"id": 252,
+				"xmas_tree": 365,
+				"type": 6,
+				"actuated_valve": null,
+				"installation_year": 2008,
+				"description": "Inner Manual Wing Valve",
+				"tubing_type": 1,
+				"valve_data": 2,
+				"notes": null,
+				"xmastreevalvetype": {
+					"id": 6,
+					"code": "innerwing",
+					"name": "Inner Wing Valve",
+					"acronym": "WGV (I)"
+				},
+				"tubingtype": {
+					"id": 1,
+					"code": "long",
+					"name": "Long String"
+				},
+				"valvedata": {
+					"id": 2,
+					"type_manufacturer": "Cameron",
+					"working_pressure": 3000,
+					"allowable_leak_rate": "15",
+					"dimension": "2",
+					"name": "Cameron 2"
+				},
+				"name": "Inner Wing Valve",
+				"acronym": "WGV (I)"
+			}
+		]
+	},
+	"casings": [
+		{
+			"id": 1603,
+			"well": 465,
+			"type": 1,
+			"fracture_gradient": null,
+			"mud_type": null,
+			"mud_density": null,
+			"mud_base_fluid_density": "1",
+			"cement_top_actual": null,
+			"cement_evaluation_logs": null,
+			"liner_hanger_depth": null,
+			"initial_wall_thickness_reduction": null,
+			"wall_thickness_reduction_rate": null,
+			"cement_top_actual_md": null,
+			"liner_hanger_depth_md": null,
+			"installation_year": null,
+			"at_surface": null,
+			"notes": null,
+			"casingtype": {
+				"id": 1,
+				"name": "Conductor Pipe",
+				"code": "conductor_pipe",
+				"visualization_order": 1
+			},
+			"sections": [
+				{
+					"id": 1532,
+					"casing": 1603,
+					"tubular_data": 967,
+					"connections": "LYNX/Quip Conn ID 28in",
+					"shoe_depth": "190",
+					"od": "30",
+					"grade": "SAW",
+					"weight": "234",
+					"shoe_depth_md": "190",
+					"notes": null,
+					"tubulardata": {
+						"id": 967,
+						"od": "30",
+						"weight": "234",
+						"grade": "SAW",
+						"wall_thickness": "0.75",
+						"body_id": "28.5",
+						"drift_id": "28.313",
+						"collapse_resistance": null,
+						"burst_resistance": null,
+						"body_yield_strength": null,
+						"suitable_for_tubing": false
+					},
+					"name": "Section  @ 190.00m",
+					"number": 1
+				}
+			],
+			"linerhangerpacker": null,
+			"shoe_depth": "190",
+			"name": "Conductor Pipe"
+		},
+		{
+			"id": 1604,
+			"well": 465,
+			"type": 2,
+			"fracture_gradient": "0.603",
+			"mud_type": "Gel Mud",
+			"mud_density": "10.2",
+			"mud_base_fluid_density": "8.8",
+			"cement_top_actual": "70",
+			"cement_evaluation_logs": null,
+			"liner_hanger_depth": null,
+			"initial_wall_thickness_reduction": "0.02",
+			"wall_thickness_reduction_rate": "0.787",
+			"cement_top_actual_md": "70",
+			"liner_hanger_depth_md": null,
+			"installation_year": 2017,
+			"at_surface": null,
+			"notes": null,
+			"casingtype": {
+				"id": 2,
+				"name": "Surface Casing",
+				"code": "surface",
+				"visualization_order": 2
+			},
+			"sections": [
+				{
+					"id": 1533,
+					"casing": 1604,
+					"tubular_data": 965,
+					"connections": "Big Omega",
+					"shoe_depth": "1264",
+					"od": "18 5/8",
+					"grade": "NT-95DE ERW",
+					"weight": "101",
+					"shoe_depth_md": "1343",
+					"notes": null,
+					"tubulardata": {
+						"id": 965,
+						"od": "18 5/8",
+						"weight": "101",
+						"grade": "NT-95DE ERW",
+						"wall_thickness": "0.51",
+						"body_id": "17.605",
+						"drift_id": "17.5",
+						"collapse_resistance": "1250",
+						"burst_resistance": "4810",
+						"body_yield_strength": "2757",
+						"suitable_for_tubing": false
+					},
+					"name": "Section  @ 1264.00m",
+					"number": 1
+				}
+			],
+			"linerhangerpacker": null,
+			"shoe_depth": "1264",
+			"name": "Surface Casing"
+		},
+		{
+			"id": 1605,
+			"well": 465,
+			"type": 3,
+			"fracture_gradient": "0.676",
+			"mud_type": "Gel Mud",
+			"mud_density": "10.5",
+			"mud_base_fluid_density": "8.8",
+			"cement_top_actual": "3916",
+			"cement_evaluation_logs": null,
+			"liner_hanger_depth": null,
+			"initial_wall_thickness_reduction": "0.02",
+			"wall_thickness_reduction_rate": "0.787",
+			"cement_top_actual_md": "4145",
+			"liner_hanger_depth_md": null,
+			"installation_year": 2017,
+			"at_surface": null,
+			"notes": null,
+			"casingtype": {
+				"id": 3,
+				"name": "Intermediate Casing",
+				"code": "intermediate",
+				"visualization_order": 3
+			},
+			"sections": [
+				{
+					"id": 1534,
+					"casing": 1605,
+					"tubular_data": 676,
+					"connections": "Buttress",
+					"shoe_depth": "5106",
+					"od": "13 3/8",
+					"grade": "J-55",
+					"weight": "68",
+					"shoe_depth_md": "5505",
+					"notes": null,
+					"tubulardata": {
+						"id": 676,
+						"od": "13 3/8",
+						"weight": "68",
+						"grade": "J-55",
+						"wall_thickness": "0.48",
+						"body_id": "12.415",
+						"drift_id": "12.259",
+						"collapse_resistance": "1949",
+						"burst_resistance": "3454",
+						"body_yield_strength": "1069",
+						"suitable_for_tubing": false
+					},
+					"name": "Section  @ 5106.00m",
+					"number": 1
+				}
+			],
+			"linerhangerpacker": null,
+			"shoe_depth": "5106",
+			"name": "Intermediate Casing"
+		},
+		{
+			"id": 1606,
+			"well": 465,
+			"type": 4,
+			"fracture_gradient": "0.702",
+			"mud_type": "Mud ULTRADRILL",
+			"mud_density": "11.7",
+			"mud_base_fluid_density": "8.8",
+			"cement_top_actual": "5327",
+			"cement_evaluation_logs": null,
+			"liner_hanger_depth": null,
+			"initial_wall_thickness_reduction": "0",
+			"wall_thickness_reduction_rate": "0.787",
+			"cement_top_actual_md": "5674",
+			"liner_hanger_depth_md": null,
+			"installation_year": 2017,
+			"at_surface": null,
+			"notes": null,
+			"casingtype": {
+				"id": 4,
+				"name": "Production Casing",
+				"code": "production",
+				"visualization_order": 4
+			},
+			"sections": [
+				{
+					"id": 1535,
+					"casing": 1606,
+					"tubular_data": 531,
+					"connections": "JFE Bear",
+					"shoe_depth": "7064",
+					"od": "9 5/8",
+					"grade": "L-80",
+					"weight": "47",
+					"shoe_depth_md": "7822",
+					"notes": null,
+					"tubulardata": {
+						"id": 531,
+						"od": "9 5/8",
+						"weight": "47",
+						"grade": "L-80",
+						"wall_thickness": "0.472",
+						"body_id": "8.681",
+						"drift_id": "8.525",
+						"collapse_resistance": "4754",
+						"burst_resistance": "6865",
+						"body_yield_strength": "1085",
+						"suitable_for_tubing": false
+					},
+					"name": "Section  @ 7064.00m",
+					"number": 1
+				}
+			],
+			"linerhangerpacker": null,
+			"shoe_depth": "7064",
+			"name": "Production Casing"
+		},
+		{
+			"id": 1607,
+			"well": 465,
+			"type": 5,
+			"fracture_gradient": null,
+			"mud_type": "Mud ULTRADRILL",
+			"mud_density": "11.7",
+			"mud_base_fluid_density": "8.8",
+			"cement_top_actual": "6866",
+			"cement_evaluation_logs": null,
+			"liner_hanger_depth": "6866",
+			"initial_wall_thickness_reduction": "0.02",
+			"wall_thickness_reduction_rate": "0.787",
+			"cement_top_actual_md": "7542",
+			"liner_hanger_depth_md": "7542",
+			"installation_year": 2017,
+			"at_surface": null,
+			"notes": null,
+			"casingtype": {
+				"id": 5,
+				"name": "Liner",
+				"code": "liner",
+				"visualization_order": 5
+			},
+			"sections": [
+				{
+					"id": 1536,
+					"casing": 1607,
+					"tubular_data": 294,
+					"connections": "Vam Top",
+					"shoe_depth": "7566",
+					"od": "7",
+					"grade": "C-75",
+					"weight": "32",
+					"shoe_depth_md": "8595",
+					"notes": null,
+					"tubulardata": {
+						"id": 294,
+						"od": "7",
+						"weight": "32",
+						"grade": "C-75",
+						"wall_thickness": "0.453",
+						"body_id": "6.094",
+						"drift_id": "6",
+						"collapse_resistance": "8201",
+						"burst_resistance": "8494",
+						"body_yield_strength": "698",
+						"suitable_for_tubing": true
+					},
+					"name": "Section  @ 7566.00m",
+					"number": 1
+				}
+			],
+			"linerhangerpacker": {
+				"id": 67,
+				"casing": 1607,
+				"working_pressure": "10000",
+				"burst_resistance": "10000",
+				"lowest_formation_gradient": "0.428",
+				"annual_degradation_of_elastomers": "1"
+			},
+			"shoe_depth": "7566",
+			"name": "Liner"
+		}
+	],
+	"completion": {
+		"id": 350,
+		"well": 465,
+		"type": 1,
+		"gravel_pack_type": 1,
+		"notes": null,
+		"gravelpacktype": {
+			"id": 1,
+			"name": "None"
+		}
+	},
+	"packers": [
+		{
+			"id": 380,
+			"well": 465,
+			"manufacturer_model": "Baker \"Signature D\"",
+			"size": null,
+			"working_pressure_from_above": 10000,
+			"working_pressure_from_below": 10000,
+			"collapse_resistance": 11570,
+			"burst_resistance": 11430,
+			"installation_year": 2017,
+			"seal_assembly": "L-22 Locator 25CR",
+			"seal_assembly_working_pressure": 10000,
+			"fluid_type": "Brine CaCl2",
+			"fluid_density": "10.2",
+			"seal_assembly_installation_year": 2000,
+			"depth": "7450",
+			"annual_degradation_of_elastomers": "1.5",
+			"lowest_formation_gradient": "0.428",
+			"tensile_rating": 285000,
+			"depth_md": "8420.4",
+			"notes": null,
+			"name": "Packer @ 7450.00m"
+		}
+	],
+	"fluidcomposition": {
+		"id": 204,
+		"well": 465,
+		"file_document": 287,
+		"notes": null
+	},
+	"fluidsanalysis": {
+		"id": 180,
+		"well": 465,
+		"file_document": 283,
+		"notes": null
+	},
+	"tubings": [
+		{
+			"id": 518,
+			"well": 465,
+			"fluid_type": null,
+			"fluid_density": null,
+			"wall_thickness_reduction_rate": null,
+			"type": 2,
+			"notes": null,
+			"stringtype": {
+				"id": 2,
+				"code": "short",
+				"name": "Short String"
+			},
+			"safetyvalve": {
+				"id": 505,
+				"tubing": 518,
+				"type": 2,
+				"manufacturer_model": null,
+				"max_od": null,
+				"min_id": null,
+				"depth": "300",
+				"working_pressure": null,
+				"collapse_resistance": 10000,
+				"burst_resistance": null,
+				"opening_pressure": null,
+				"closing_pressure": null,
+				"control_line_size": null,
+				"serial_number": null,
+				"installation_year": null,
+				"depth_md": null,
+				"allowable_leak_rate": null,
+				"notes": null,
+				"safetyvalvetype": {
+					"id": 2,
+					"name": "SCSSV TRSV",
+					"code": "scssv-trsv"
+				},
+				"acronym": "DHSV",
+				"name": "Safety Valve"
+			},
+			"safetyvalvenipple": null,
+			"sections": [
+				{
+					"id": 525,
+					"tubing": 518,
+					"tubular_data": 70,
+					"connections": null,
+					"shoe_depth": "8000",
+					"installation_year": null,
+					"od": "3 1/2",
+					"grade": "P110",
+					"weight": "12.7",
+					"shoe_depth_md": null,
+					"notes": null,
+					"tubulardata": {
+						"id": 70,
+						"od": "3 1/2",
+						"weight": "12.7",
+						"grade": "P110",
+						"wall_thickness": "0.375",
+						"body_id": "2.75",
+						"drift_id": "2.625",
+						"collapse_resistance": "21050",
+						"burst_resistance": "20630",
+						"body_yield_strength": "405",
+						"suitable_for_tubing": true
+					},
+					"name": "Section  @ 8000.00m",
+					"number": 1
+				}
+			],
+			"accessories": [],
+			"shoe_depth": "8000",
+			"name": "Short String"
+		},
+		{
+			"id": 466,
+			"well": 465,
+			"fluid_type": "Oil",
+			"fluid_density": "0.9",
+			"wall_thickness_reduction_rate": "1.181",
+			"type": 1,
+			"notes": null,
+			"stringtype": {
+				"id": 1,
+				"code": "long",
+				"name": "Long String"
+			},
+			"safetyvalve": {
+				"id": 455,
+				"tubing": 466,
+				"type": 3,
+				"manufacturer_model": "Baker BFVE-10",
+				"max_od": null,
+				"min_id": null,
+				"depth": "238.24",
+				"working_pressure": 6000,
+				"collapse_resistance": 10800,
+				"burst_resistance": 9500,
+				"opening_pressure": 3983,
+				"closing_pressure": 33880,
+				"control_line_size": "0.25",
+				"serial_number": null,
+				"installation_year": null,
+				"depth_md": "238.24",
+				"allowable_leak_rate": null,
+				"notes": null,
+				"safetyvalvetype": {
+					"id": 3,
+					"name": "SCSSV WRSV",
+					"code": "scssv-wrsv"
+				},
+				"acronym": "DHSV",
+				"name": "Safety Valve"
+			},
+			"safetyvalvenipple": {
+				"id": 365,
+				"manufacturer_model": "Seating Nipple type \"B\"",
+				"max_od": null,
+				"min_id": null,
+				"collapse_resistance": 10800,
+				"burst_resistance": 9500,
+				"tubing": 466,
+				"depth": "238.24",
+				"depth_md": "238.24",
+				"notes": null
+			},
+			"sections": [
+				{
+					"id": 470,
+					"tubing": 466,
+					"tubular_data": 966,
+					"connections": "Vam Top",
+					"shoe_depth": "7978",
+					"installation_year": null,
+					"od": "3 1/2",
+					"grade": "17CRS-110",
+					"weight": "9.2",
+					"shoe_depth_md": "8999",
+					"notes": null,
+					"tubulardata": {
+						"id": 966,
+						"od": "3 1/2",
+						"weight": "9.2",
+						"grade": "17CRS-110",
+						"wall_thickness": "0.254",
+						"body_id": "2.992",
+						"drift_id": "2.867",
+						"collapse_resistance": "13530",
+						"burst_resistance": "14370",
+						"body_yield_strength": "285",
+						"suitable_for_tubing": false
+					},
+					"name": "Section  @ 7978.00m",
+					"number": 1
+				}
+			],
+			"accessories": [
+				{
+					"id": 565,
+					"manufacturer_model": null,
+					"description": "Seating nipple \"F\"",
+					"max_od": null,
+					"min_id": null,
+					"depth": "2552",
+					"collapse_resistance": 11570,
+					"burst_resistance": null,
+					"type": 1,
+					"tubing": 466,
+					"depth_md": null,
+					"notes": null,
+					"accessorytype": {
+						"id": 1,
+						"name": "Landing Nipple",
+						"code": "landing-nipple"
+					},
+					"name": "Landing Nipple @ 2552.00m"
+				},
+				{
+					"id": 566,
+					"manufacturer_model": null,
+					"description": "Chemical Injection Mandrel",
+					"max_od": null,
+					"min_id": null,
+					"depth": "2553",
+					"collapse_resistance": 11570,
+					"burst_resistance": null,
+					"type": 2,
+					"tubing": 466,
+					"depth_md": null,
+					"notes": null,
+					"accessorytype": {
+						"id": 2,
+						"name": "Circulating Valve",
+						"code": "circulating-valve"
+					},
+					"name": "Circulating Valve @ 2553.00m"
+				},
+				{
+					"id": 567,
+					"manufacturer_model": null,
+					"description": "Gas lift mandrel",
+					"max_od": null,
+					"min_id": null,
+					"depth": "4823.18",
+					"collapse_resistance": 10800,
+					"burst_resistance": 9500,
+					"type": 2,
+					"tubing": 466,
+					"depth_md": null,
+					"notes": null,
+					"accessorytype": {
+						"id": 2,
+						"name": "Circulating Valve",
+						"code": "circulating-valve"
+					},
+					"name": "Circulating Valve @ 4823.18m"
+				},
+				{
+					"id": 568,
+					"manufacturer_model": null,
+					"description": "Gas lift mandrel",
+					"max_od": null,
+					"min_id": null,
+					"depth": "6595.62",
+					"collapse_resistance": 10800,
+					"burst_resistance": 9500,
+					"type": 2,
+					"tubing": 466,
+					"depth_md": "6595.62",
+					"notes": null,
+					"accessorytype": {
+						"id": 2,
+						"name": "Circulating Valve",
+						"code": "circulating-valve"
+					},
+					"name": "Circulating Valve @ 6595.62m"
+				}
+			],
+			"shoe_depth": "7978",
+			"name": "Long String"
+		}
+	],
+	"operationalconditions": [
+		{
+			"id": 520,
+			"well": 465,
+			"reservoir_depth": "7950",
+			"original_pore_pressure_gradient": null,
+			"fracture_gradient": null,
+			"max_bhp": null,
+			"max_thp": null,
+			"sbht": null,
+			"stht": null,
+			"minimum_formation_gradient": "0.3",
+			"max_ftht": null,
+			"name": "Thamama Zone B",
+			"string_type": 3,
+			"reservoir_measured_depth": null,
+			"sthp": null,
+			"notes": null,
+			"stringtype": {
+				"id": 3,
+				"name": "Short+Long",
+				"code": "both"
+			}
+		}
+	],
+	"pressures": [
+		{
+			"id": 1069,
+			"well": 465,
+			"surveydate": "2016-06-21",
+			"thp": "7",
+			"notes": "example 1",
+			"annulus_a": "8",
+			"annulus_b": "9",
+			"thp_long": "6",
+			"thp_short": "7"
+		},
+		{
+			"id": 1070,
+			"well": 465,
+			"surveydate": "2016-06-22",
+			"thp": "12",
+			"notes": "example 2",
+			"annulus_a": "13",
+			"annulus_b": "14",
+			"thp_long": "12",
+			"thp_short": "12"
+		},
+		{
+			"id": 1071,
+			"well": 465,
+			"surveydate": "2016-06-25",
+			"thp": "9",
+			"notes": "example 3",
+			"annulus_a": "8",
+			"annulus_b": "5",
+			"thp_long": "9",
+			"thp_short": "9"
+		}
+	],
+	"pressuretests": [
+		{
+			"id": 128,
+			"well": 465,
+			"surveydate": "2019-05-05",
+			"testdata": [
+				{
+					"id": 329,
+					"bebu_pressure_test": 128,
+					"surveytime": "2019-05-05 10:00:00",
+					"tubing_thp": "1500",
+					"casing_chp": null,
+					"casing_notes": "shut-in",
+					"annulus_a_pressure": "230",
+					"annulus_a_notes": "",
+					"annulus_b_pressure": "200",
+					"annulus_b_notes": "",
+					"annulus_c_pressure": "0",
+					"annulus_c_notes": "",
+					"notes": ""
+				},
+				{
+					"id": 330,
+					"bebu_pressure_test": 128,
+					"surveytime": "2019-05-05 10:15:00",
+					"tubing_thp": "1490",
+					"casing_chp": null,
+					"casing_notes": "",
+					"annulus_a_pressure": "200",
+					"annulus_a_notes": "",
+					"annulus_b_pressure": "200",
+					"annulus_b_notes": "",
+					"annulus_c_pressure": "0",
+					"annulus_c_notes": "",
+					"notes": ""
+				}
+			]
+		},
+		{
+			"id": 129,
+			"well": 465,
+			"surveydate": "2019-06-10",
+			"testdata": [
+				{
+					"id": 331,
+					"bebu_pressure_test": 129,
+					"surveytime": "2019-06-10 00:00:00",
+					"tubing_thp": "200",
+					"casing_chp": null,
+					"casing_notes": "200",
+					"annulus_a_pressure": null,
+					"annulus_a_notes": "",
+					"annulus_b_pressure": "100",
+					"annulus_b_notes": "",
+					"annulus_c_pressure": "10",
+					"annulus_c_notes": "",
+					"notes": ""
+				}
+			]
+		}
+	],
+	"safetyfactors": [
+		{
+			"id": 202234,
+			"well": 465,
+			"well_barrier_element": "landing-nipple-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 202235,
+			"well": 465,
+			"well_barrier_element": "circulating-valve-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 202236,
+			"well": 465,
+			"well_barrier_element": "circulating-valve-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 202237,
+			"well": 465,
+			"well_barrier_element": "circulating-valve-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216962,
+			"well": 465,
+			"well_barrier_element": "safety-valve-nipple-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216963,
+			"well": 465,
+			"well_barrier_element": "landing-nipple--255200ft-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216964,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--255300ft-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216965,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--482318ft-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216966,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--659562ft-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216967,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216968,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 216969,
+			"well": 465,
+			"well_barrier_element": "packer-collapse|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252673,
+			"well": 465,
+			"well_barrier_element": "wellhead-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252674,
+			"well": 465,
+			"well_barrier_element": "tubing-hanger-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252675,
+			"well": 465,
+			"well_barrier_element": "production-casing-burst-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252676,
+			"well": 465,
+			"well_barrier_element": "production-casing-burst-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252677,
+			"well": 465,
+			"well_barrier_element": "packer-element-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252678,
+			"well": 465,
+			"well_barrier_element": "seal-assembly-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252679,
+			"well": 465,
+			"well_barrier_element": "liner-lap-burst-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252680,
+			"well": 465,
+			"well_barrier_element": "liner-lap-burst-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252681,
+			"well": 465,
+			"well_barrier_element": "liner-hanger-packer-element-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252682,
+			"well": 465,
+			"well_barrier_element": "liner-hanger-packer-burst|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252683,
+			"well": 465,
+			"well_barrier_element": "safety-valve-nipple-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252684,
+			"well": 465,
+			"well_barrier_element": "landing-nipple--255200m-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252685,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--255300m-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252686,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--482318m-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252687,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--659562m-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252688,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-top|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252689,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-bottom|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252690,
+			"well": 465,
+			"well_barrier_element": "packer-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252691,
+			"well": 465,
+			"well_barrier_element": "safety-valve-collapse|Short String",
+			"design_safety_factor": "1.2",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252692,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-top|Short String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252693,
+			"well": 465,
+			"well_barrier_element": "tubing-collapse-bottom|Short String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252694,
+			"well": 465,
+			"well_barrier_element": "packer-collapse|Short String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252695,
+			"well": 465,
+			"well_barrier_element": "wellhead-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252696,
+			"well": 465,
+			"well_barrier_element": "production-casing-collapse-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 237016,
+			"well": 465,
+			"well_barrier_element": "landing-nipple--255200ft-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 237017,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--255300ft-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 237018,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--482318ft-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 237019,
+			"well": 465,
+			"well_barrier_element": "circulating-valve--659562ft-collapse|Long String",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "A",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252697,
+			"well": 465,
+			"well_barrier_element": "production-casing-collapse-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252698,
+			"well": 465,
+			"well_barrier_element": "intermediate-casing-burst-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252699,
+			"well": 465,
+			"well_barrier_element": "intermediate-casing-burst-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252700,
+			"well": 465,
+			"well_barrier_element": "formation-fracture-below-intermediate-casing-shoe|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "B",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252701,
+			"well": 465,
+			"well_barrier_element": "wellhead-rating|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252702,
+			"well": 465,
+			"well_barrier_element": "intermediate-casing-collapse-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252703,
+			"well": 465,
+			"well_barrier_element": "intermediate-casing-collapse-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252704,
+			"well": 465,
+			"well_barrier_element": "surface-casing-burst-top|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252705,
+			"well": 465,
+			"well_barrier_element": "surface-casing-burst-bottom|",
+			"design_safety_factor": "1.1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		},
+		{
+			"id": 252706,
+			"well": 465,
+			"well_barrier_element": "formation-fracture-below-surface-casing-shoe|",
+			"design_safety_factor": "1",
+			"mop_maasp_ratio": "80",
+			"annulus": "C",
+			"lop_maasp_ratio": "80"
+		}
+	],
+	"wellheadvisualinspections": [],
+	"wellheadmaintenances": [],
+	"xmastreevisualinspections": [],
+	"xmastreemaintenances": [],
+	"safetyvalvemaintenances": [],
+	"genericactivities": [
+		{
+			"id": 13,
+			"well": 465,
+			"type": 1,
+			"name": "",
+			"date": null,
+			"expiration_date": "2019-06-30",
+			"supervisor": 3,
+			"notes": "",
+			"genericactivitytype": {
+				"id": 1,
+				"name": "Other"
+			}
+		}
+	],
+	"todoactivities": [
+		{
+			"id": "Generic-Well-13",
+			"object_type": "Well",
+			"object_name": null,
+			"ref": 13,
+			"well": 465,
+			"type": 1,
+			"type_name": "Other",
+			"date": null,
+			"notes": "",
+			"expiration_date": "2019-06-30",
+			"original_expiration_date": null,
+			"deviation_expiration_date": null,
+			"supervisor": 3,
+			"passed": null,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "Generic",
+			"activity_name": "",
+			"well_name": "Double Completion Well",
+			"name": null,
+			"supervisor_name": "Supervisor"
+		},
+		{
+			"id": "test-SceComponent-95",
+			"object_type": "SceComponent",
+			"object_name": "Short String SCSSV TRSV",
+			"ref": 95,
+			"well": 465,
+			"type": 1,
+			"type_name": "Leak Test",
+			"date": null,
+			"notes": null,
+			"expiration_date": "2023-03-18",
+			"original_expiration_date": "2023-03-18",
+			"deviation_expiration_date": null,
+			"supervisor": 2,
+			"passed": true,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "test",
+			"activity_name": "Test",
+			"well_name": "Double Completion Well",
+			"name": "Short String SCSSV TRSV Test",
+			"supervisor_name": "Luigi"
+		}
+	],
+	"doneactivities": [
+		{
+			"id": "test-SceComponent-94",
+			"object_type": "SceComponent",
+			"object_name": "Short String SCSSV TRSV",
+			"ref": 94,
+			"well": 465,
+			"type": 1,
+			"type_name": "Leak Test",
+			"date": "2022-03-13",
+			"notes": null,
+			"expiration_date": "2022-03-18",
+			"original_expiration_date": "2022-03-18",
+			"deviation_expiration_date": null,
+			"supervisor": 2,
+			"passed": false,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "test",
+			"activity_name": "Test",
+			"well_name": "Double Completion Well",
+			"name": "Short String SCSSV TRSV Test",
+			"supervisor_name": "Luigi"
+		}
+	],
+	"activities": [
+		{
+			"id": "test-SceComponent-94",
+			"object_type": "SceComponent",
+			"object_name": "Short String SCSSV TRSV",
+			"ref": 94,
+			"well": 465,
+			"type": 1,
+			"type_name": "Leak Test",
+			"date": "2022-03-13",
+			"notes": null,
+			"expiration_date": "2022-03-18",
+			"original_expiration_date": "2022-03-18",
+			"deviation_expiration_date": null,
+			"supervisor": 2,
+			"passed": false,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "test",
+			"activity_name": "Test",
+			"well_name": "Double Completion Well",
+			"name": "Short String SCSSV TRSV Test",
+			"supervisor_name": "Luigi"
+		},
+		{
+			"id": "test-SceComponent-95",
+			"object_type": "SceComponent",
+			"object_name": "Short String SCSSV TRSV",
+			"ref": 95,
+			"well": 465,
+			"type": 1,
+			"type_name": "Leak Test",
+			"date": null,
+			"notes": null,
+			"expiration_date": "2023-03-18",
+			"original_expiration_date": "2023-03-18",
+			"deviation_expiration_date": null,
+			"supervisor": 2,
+			"passed": true,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "test",
+			"activity_name": "Test",
+			"well_name": "Double Completion Well",
+			"name": "Short String SCSSV TRSV Test",
+			"supervisor_name": "Luigi"
+		},
+		{
+			"id": "Generic-Well-13",
+			"object_type": "Well",
+			"object_name": null,
+			"ref": 13,
+			"well": 465,
+			"type": 1,
+			"type_name": "Other",
+			"date": null,
+			"notes": "",
+			"expiration_date": "2019-06-30",
+			"original_expiration_date": null,
+			"deviation_expiration_date": null,
+			"supervisor": 3,
+			"passed": null,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"activity_type": "Generic",
+			"activity_name": "",
+			"well_name": "Double Completion Well",
+			"name": null,
+			"supervisor_name": "Supervisor"
+		}
+	],
+	"wellheadmovements": [
+		{
+			"id": 12,
+			"well": 465,
+			"date": "2019-06-02",
+			"vertical_movement": 0,
+			"operator": 1,
+			"notes": null,
+			"supervisor": {
+				"id": 1,
+				"name": "Francesco",
+				"email": "francesco@proenergyonline.com"
+			}
+		},
+		{
+			"id": 13,
+			"well": 465,
+			"date": "2019-06-02",
+			"vertical_movement": 0,
+			"operator": 2,
+			"notes": null,
+			"supervisor": {
+				"id": 2,
+				"name": "Luigi",
+				"email": "luigi@proenergyonline.com"
+			}
+		},
+		{
+			"id": 14,
+			"well": 465,
+			"date": "2019-05-13",
+			"vertical_movement": 0,
+			"operator": 2,
+			"notes": null,
+			"supervisor": {
+				"id": 2,
+				"name": "Luigi",
+				"email": "luigi@proenergyonline.com"
+			}
+		}
+	],
+	"logs": [
+		{
+			"id": 9,
+			"well": 465,
+			"type": 6,
+			"date": "2019-06-03",
+			"main_results": "external corrosion",
+			"log_document": 306,
+			"description": null,
+			"welllogtype": {
+				"id": 6,
+				"name": "USIT log"
+			}
+		}
+	],
+	"deviationsurveys": [
+		{
+			"id": 14,
+			"well": 465,
+			"date": "2019-05-17",
+			"survey_document": 288
+		},
+		{
+			"id": 15,
+			"well": 465,
+			"date": "2019-05-05",
+			"survey_document": null
+		}
+	],
+	"failures": [
+		{
+			"id": 108,
+			"well": 465,
+			"date": "2022-03-13",
+			"component": null,
+			"type": "",
+			"remedial_actions": "",
+			"failure_document": null,
+			"sce_component": "safetyvalve-505",
+			"component_type": null,
+			"description": "",
+			"solved": false,
+			"proposed_remedial_actions": "",
+			"solving_date": null,
+			"leak_rate_oil": null,
+			"leak_rate_gas": null,
+			"is_sce_component": true,
+			"failure_type": 1,
+			"scecomponent": {
+				"id": "safetyvalve-505",
+				"component_id": 505,
+				"code": "safetyvalve-505",
+				"type": "safetyvalve",
+				"well": 465,
+				"name": "Short String SCSSV TRSV",
+				"type_manufacturer": null,
+				"depth": "300",
+				"working_pressure": null,
+				"installation_year": null,
+				"valve_type": null
+			},
+			"failuretype": {
+				"id": 1,
+				"name": "Leak",
+				"code": "leak"
+			},
+			"component_description": "Short String SCSSV TRSV",
+			"name": "13/03/2022 Leak Short String SCSSV TRSV"
+		},
+		{
+			"id": 103,
+			"well": 465,
+			"date": "2019-12-01",
+			"component": "",
+			"type": "",
+			"remedial_actions": "",
+			"failure_document": null,
+			"sce_component": "xmastreevalve-250",
+			"component_type": null,
+			"description": "",
+			"solved": false,
+			"proposed_remedial_actions": "",
+			"solving_date": null,
+			"leak_rate_oil": null,
+			"leak_rate_gas": null,
+			"is_sce_component": true,
+			"failure_type": 2,
+			"scecomponent": {
+				"id": "xmastreevalve-250",
+				"component_id": 250,
+				"code": "xmastreevalve-250",
+				"type": "xmastreevalve",
+				"well": 465,
+				"name": "Swab Valve",
+				"type_manufacturer": "Cameron",
+				"depth": "0",
+				"working_pressure": 5000,
+				"installation_year": 2008,
+				"valve_type": "swab"
+			},
+			"failuretype": {
+				"id": 2,
+				"name": "Function",
+				"code": "function"
+			},
+			"component_description": "Swab Valve",
+			"name": "01/12/2019 Function Swab Valve"
+		}
+	],
+	"tests": [
+		{
+			"id": 95,
+			"well": 465,
+			"type": 1,
+			"component": null,
+			"sce_component": "safetyvalve-505",
+			"component_type": null,
+			"date": null,
+			"failed": null,
+			"notes": null,
+			"report": null,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"operator": 2,
+			"expiration_date": "2023-03-18",
+			"new_expiration_date": null,
+			"failure_type": null,
+			"remedial_actions": null,
+			"tubing_type": null,
+			"is_sce_component": true,
+			"frequency": null,
+			"do_next": null,
+			"scheduled": null,
+			"leak_rate": null,
+			"testtype": {
+				"id": 1,
+				"code": "leak",
+				"name": "Leak Test"
+			},
+			"scecomponent": {
+				"id": "safetyvalve-505",
+				"component_id": 505,
+				"code": "safetyvalve-505",
+				"type": "safetyvalve",
+				"well": 465,
+				"name": "Short String SCSSV TRSV",
+				"type_manufacturer": null,
+				"depth": "300",
+				"working_pressure": null,
+				"installation_year": null,
+				"valve_type": null
+			},
+			"supervisor": {
+				"id": 2,
+				"name": "Luigi",
+				"email": "luigi@proenergyonline.com"
+			},
+			"component_description": "Short String SCSSV TRSV",
+			"final_expiration_date": "2023-03-18",
+			"name": "Leak Test Short String SCSSV TRSV"
+		},
+		{
+			"id": 94,
+			"well": 465,
+			"type": 1,
+			"component": null,
+			"sce_component": "safetyvalve-505",
+			"component_type": null,
+			"date": "2022-03-13",
+			"failed": true,
+			"notes": null,
+			"report": null,
+			"deviation_obtained": null,
+			"deviation_document": null,
+			"operator": 2,
+			"expiration_date": "2022-03-18",
+			"new_expiration_date": null,
+			"failure_type": null,
+			"remedial_actions": null,
+			"tubing_type": null,
+			"is_sce_component": true,
+			"frequency": 12,
+			"do_next": true,
+			"scheduled": 96,
+			"leak_rate": null,
+			"testtype": {
+				"id": 1,
+				"code": "leak",
+				"name": "Leak Test"
+			},
+			"scecomponent": {
+				"id": "safetyvalve-505",
+				"component_id": 505,
+				"code": "safetyvalve-505",
+				"type": "safetyvalve",
+				"well": 465,
+				"name": "Short String SCSSV TRSV",
+				"type_manufacturer": null,
+				"depth": "300",
+				"working_pressure": null,
+				"installation_year": null,
+				"valve_type": null
+			},
+			"supervisor": {
+				"id": 2,
+				"name": "Luigi",
+				"email": "luigi@proenergyonline.com"
+			},
+			"component_description": "Short String SCSSV TRSV",
+			"final_expiration_date": "2022-03-18",
+			"name": "13/03/2022 Leak Test Short String SCSSV TRSV"
+		}
+	],
+	"incidents": [
+		{
+			"id": 10,
+			"well": 465,
+			"date": "2019-06-01",
+			"ongoing_operation": "Wellhead test",
+			"description": "One operator had an injury",
+			"involved_personnel": "Flavio",
+			"remedial_actions": "transported in elicopter to the medical center",
+			"incident_document": 295,
+			"name": "01/06/2019 One operator had an injury"
+		}
+	],
+	"reminders": [],
+	"corrosionparameter": {
+		"id": 209,
+		"h2s_partial_pressure": null,
+		"h2s_concentration": null,
+		"co2_partial_pressure": null,
+		"h2ophase_percent_hydrocarbon": null,
+		"h2ophase_ph": null,
+		"flowing_pressure": null,
+		"flowing_temperature": null,
+		"fugacity": null,
+		"well": 465,
+		"result": null
+	},
+	"scecomponents": [
+		{
+			"id": "xmastree-365",
+			"component_id": 365,
+			"code": "xmastree-365",
+			"type": "xmastree",
+			"well": 465,
+			"name": "X-mas Tree Body",
+			"type_manufacturer": "",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": null
+		},
+		{
+			"id": "wellheadvalve-145",
+			"component_id": 145,
+			"code": "wellhead_valve-145",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus C Valve ",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusc"
+		},
+		{
+			"id": "xmastreevalve-256",
+			"component_id": 256,
+			"code": "xmastreevalve-256",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Hydraulic Wing Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 3000,
+			"installation_year": 2008,
+			"valve_type": "hydrowing"
+		},
+		{
+			"id": "wellheadvalve-146",
+			"component_id": 146,
+			"code": "wellhead_valve-146",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus C Valve ",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusc"
+		},
+		{
+			"id": "wellheadvalve-160",
+			"component_id": 160,
+			"code": "wellhead_valve-160",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus A Valve",
+			"type_manufacturer": null,
+			"depth": "0",
+			"working_pressure": null,
+			"installation_year": null,
+			"valve_type": "annulusa"
+		},
+		{
+			"id": "xmastreevalve-159",
+			"component_id": 159,
+			"code": "xmastreevalve-159",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Hydraulic Master Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2010,
+			"valve_type": "uppermaster"
+		},
+		{
+			"id": "tubing-518",
+			"component_id": 518,
+			"code": "tubing-518",
+			"type": "tubing",
+			"well": 465,
+			"name": "Short String",
+			"type_manufacturer": "",
+			"depth": null,
+			"working_pressure": null,
+			"installation_year": null,
+			"valve_type": null
+		},
+		{
+			"id": "xmastreevalve-250",
+			"component_id": 250,
+			"code": "xmastreevalve-250",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Swab Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2008,
+			"valve_type": "swab"
+		},
+		{
+			"id": "safetyvalve-455",
+			"component_id": 455,
+			"code": "safetyvalve-455",
+			"type": "safetyvalve",
+			"well": 465,
+			"name": "Long String SCSSV WRSV",
+			"type_manufacturer": "Baker BFVE-10",
+			"depth": "238.24",
+			"working_pressure": 6000,
+			"installation_year": null,
+			"valve_type": null
+		},
+		{
+			"id": "wellheadvalve-142",
+			"component_id": 142,
+			"code": "wellhead_valve-142",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus A Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusa"
+		},
+		{
+			"id": "tubing-466",
+			"component_id": 466,
+			"code": "tubing-466",
+			"type": "tubing",
+			"well": 465,
+			"name": "Long String",
+			"type_manufacturer": "",
+			"depth": null,
+			"working_pressure": null,
+			"installation_year": null,
+			"valve_type": null
+		},
+		{
+			"id": "safetyvalve-505",
+			"component_id": 505,
+			"code": "safetyvalve-505",
+			"type": "safetyvalve",
+			"well": 465,
+			"name": "Short String SCSSV TRSV",
+			"type_manufacturer": null,
+			"depth": "300",
+			"working_pressure": null,
+			"installation_year": null,
+			"valve_type": null
+		},
+		{
+			"id": "xmastreevalve-251",
+			"component_id": 251,
+			"code": "xmastreevalve-251",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Inner Wing Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 3000,
+			"installation_year": 2008,
+			"valve_type": "innerwing"
+		},
+		{
+			"id": "xmastreevalve-252",
+			"component_id": 252,
+			"code": "xmastreevalve-252",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Inner Wing Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 3000,
+			"installation_year": 2008,
+			"valve_type": "innerwing"
+		},
+		{
+			"id": "xmastreevalve-255",
+			"component_id": 255,
+			"code": "xmastreevalve-255",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Hydraulic Wing Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 3000,
+			"installation_year": 2008,
+			"valve_type": "hydrowing"
+		},
+		{
+			"id": "wellheadvalve-141",
+			"component_id": 141,
+			"code": "wellhead_valve-141",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus A Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusa"
+		},
+		{
+			"id": "xmastreevalve-249",
+			"component_id": 249,
+			"code": "xmastreevalve-249",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Swab Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2008,
+			"valve_type": "swab"
+		},
+		{
+			"id": "wellheadvalve-143",
+			"component_id": 143,
+			"code": "wellhead_valve-143",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus B Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusb"
+		},
+		{
+			"id": "xmastreevalve-158",
+			"component_id": 158,
+			"code": "xmastreevalve-158",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Bottom Master Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2008,
+			"valve_type": "lowermaster"
+		},
+		{
+			"id": "wellheadvalve-144",
+			"component_id": 144,
+			"code": "wellhead_valve-144",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus B Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": null,
+			"valve_type": "annulusb"
+		},
+		{
+			"id": "wellheadvalve-156",
+			"component_id": 156,
+			"code": "wellhead_valve-156",
+			"type": "wellheadvalve",
+			"well": 465,
+			"name": "Annulus A Valve",
+			"type_manufacturer": null,
+			"depth": "0",
+			"working_pressure": null,
+			"installation_year": null,
+			"valve_type": "annulusa"
+		},
+		{
+			"id": "xmastreevalve-248",
+			"component_id": 248,
+			"code": "xmastreevalve-248",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Hydraulic Master Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2010,
+			"valve_type": "uppermaster"
+		},
+		{
+			"id": "wellhead-380",
+			"component_id": 380,
+			"code": "wellhead-380",
+			"type": "wellhead",
+			"well": 465,
+			"name": "Wellhead Body",
+			"type_manufacturer": "CHH \"IC-2\" 20\" 3/4 x 18\" 5/8 + CS \"IC-2\" 20\" 3/4 x 13\" 5/8 + TS \"IC-2-L\" 13\" 5/8 x 11\"",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2017,
+			"valve_type": null
+		},
+		{
+			"id": "xmastreevalve-247",
+			"component_id": 247,
+			"code": "xmastreevalve-247",
+			"type": "xmastreevalve",
+			"well": 465,
+			"name": "Bottom Master Valve",
+			"type_manufacturer": "Cameron",
+			"depth": "0",
+			"working_pressure": 5000,
+			"installation_year": 2008,
+			"valve_type": "lowermaster"
+		}
+	],
+	"attachments": []
+}
