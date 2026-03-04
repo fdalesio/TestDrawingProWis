@@ -639,7 +639,7 @@ function renderDoubleCompletion(data, opts = {}) {
   const whH      = 174 * scale;
 
   const xtH          = 240 * scale;
-  const xtBodyBaseW  = 66 * scale;       // base width (pre-multiply)
+  const xtBodyBaseW  = 59.4 * scale;     // base width (pre-multiply)
   const xtBodyW_d    = xtBodyBaseW * 1.55;
   const boreSpacing  = 52 * scale;       // distanza tra i centri bores
 
@@ -896,7 +896,7 @@ function renderSingleCompletion(data, opts = {}) {
   const W = 900 * scale, H = 660 * scale;
   const pipeBore = 11 * scale, whH = 174 * scale, xtH = 240 * scale;
   const valveW = 72 * scale, valveH = Math.round(28 * 1.4) * scale;
-  const xtBodyW = 66 * scale;
+  const xtBodyW = 59.4 * scale;
   const vr = valveH / 2;
 
   // Dynamic originX: centre the drawing accounting for variable right-side wing valve count
