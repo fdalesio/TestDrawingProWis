@@ -42,12 +42,12 @@ const GID = {
 
 const svgEl = (tag, attrs = {}, children = "") =>
   `<${tag} ${Object.entries(attrs)
-      .map(([k, v]) => `${k}="${String(v).replace(/"/g, '"')}"`)
+      .map(([k, v]) => `${k}="${String(v).replace(/"/g, '&quot;')}"`)
       .join(" ")}>${children}</${tag}>`;
 
 const svgSelf = (tag, attrs = {}) =>
   `<${tag} ${Object.entries(attrs)
-      .map(([k, v]) => `${k}="${String(v).replace(/"/g, '"')}"`)
+      .map(([k, v]) => `${k}="${String(v).replace(/"/g, '&quot;')}"`)
       .join(" ")} />`;
 
 const group = (x, y, content) =>
@@ -97,19 +97,12 @@ function pipeBreakSymbol({ bore = 12, gap = 26 } = {}) {
 
 
 // Horizontal pipe (left or right)
-function pipeHorizontal({ width = 120, bore = 12, color = THEME.pipe } = {}) {
+function pipeHorizontal({ width = 120, bore = 12, color = THEME.pipe, square = false } = {}) {
   const w = Math.abs(width);
   const sign = Math.sign(width) || 1;
-
-  return group(sign < 0 ? -w : 0, 0, svgSelf("rect", {
-    x: 0,
-    y: -bore / 2,
-    width: w,
-    height: bore,
-    fill: color,
-    rx: bore / 2,
-    ry: bore / 2
-  }));
+  const attrs = { x: 0, y: -bore / 2, width: w, height: bore, fill: color };
+  if (!square) { attrs.rx = bore / 2; attrs.ry = bore / 2; }
+  return group(sign < 0 ? -w : 0, 0, svgSelf("rect", attrs));
 }
 
 
@@ -783,7 +776,8 @@ function renderDoubleCompletion(data, opts = {}) {
       const vOff = spoolHalf + 10 + vr + 6 * scale;
       const x    = originX + sign * vOff;
 
-      content += group(originX, y, pipeHorizontal({ width: sign * (vOff + vr), bore: pipeBore }));
+      const stubX = originX + sign * spoolHalf;
+      content += group(stubX, y, pipeHorizontal({ width: sign * (vOff + vr - spoolHalf), bore: pipeBore, square: true }));
       content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
     });
   });
@@ -969,7 +963,8 @@ function renderSingleCompletion(data, opts = {}) {
       const vOff = spoolHalf + 10 + vr + 6 * scale; // valve centre; clears spool junction flange (fl=10)
       const x = originX + sign * vOff;
 
-      content += group(originX, y, pipeHorizontal({ width: sign * (vOff + vr), bore: pipeBore }));
+      const stubX = originX + sign * spoolHalf;
+      content += group(stubX, y, pipeHorizontal({ width: sign * (vOff + vr - spoolHalf), bore: pipeBore, square: true }));
       content += valveClickGroup(x, y, valveGlyph(v?.wellheadvalvetype?.code, { width: valveW, height: valveH }), valveInfo(v));
     });
   });
